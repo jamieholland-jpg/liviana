@@ -1,0 +1,1140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Liviana — Curated Housing for Nurses</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              /* Brand palette */
+              brand: {
+                black: "#282828",
+                brown: "#544743",
+                tan: "#8F7C65",
+                sand: "#CEC8BC",
+                gray: "#E8E8E8",
+                cream: "#F3EEEA",
+                white: "#FFFFFF",
+              },
+              /* Existing tokens remapped to brand */
+              cream: {
+                DEFAULT: "#F3EEEA",
+                50: "#FAF7F2",
+                100: "#EFE9DF",
+                200: "#E6DDD0",
+              },
+              espresso: {
+                DEFAULT: "#544743",
+                900: "#282828",
+                800: "#3A2F2C",
+                700: "#544743",
+                600: "#6B5A55",
+              },
+              cocoa: {
+                DEFAULT: "#544743",
+                600: "#544743",
+                400: "#8F7C65",
+                200: "#CEC8BC",
+              },
+              ink: "#282828",
+              warm: {
+                50: "#FAF7F2",
+                100: "#E6DDD0",
+                200: "#CEC8BC",
+                300: "#8F7C65",
+              },
+            },
+            fontFamily: {
+              display: ['"Cormorant Garamond"', "serif"],
+              sans: ["Inter", "system-ui", "sans-serif"],
+              mono: ['"JetBrains Mono"', "ui-monospace", "monospace"],
+            },
+            letterSpacing: {
+              widest: "0.24em",
+              ultra: "0.32em",
+            },
+            borderRadius: {
+              none: "0",
+              DEFAULT: "0",
+              sm: "0",
+              md: "0",
+              lg: "0",
+              xl: "0",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      html {
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: "Inter", system-ui, sans-serif;
+        background: #f3eeea;
+        color: #282828;
+      }
+      button,
+      input,
+      textarea,
+      select {
+        border-radius: 0;
+      }
+      ::selection {
+        background: #544743;
+        color: #faf7f2;
+      }
+
+      /* Sharp-edge CTA classes */
+      .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: #544743;
+        color: #faf7f2;
+        padding: 0.875rem 1.75rem;
+        font-size: 0.75rem;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        font-family: "Inter", sans-serif;
+        transition: all 500ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .btn-primary:hover {
+        background: #282828;
+        letter-spacing: 0.32em;
+      }
+      .btn-light {
+        background: #faf7f2;
+        color: #282828;
+      }
+      .btn-light:hover {
+        background: #cec8bc;
+        color: #282828;
+      }
+      .btn-ghost {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        border: 1px solid rgba(250, 247, 242, 0.4);
+        color: #faf7f2;
+        padding: 0.875rem 1.75rem;
+        font-size: 0.75rem;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        background: transparent;
+        transition: all 500ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .btn-ghost:hover {
+        background: rgba(250, 247, 242, 0.1);
+        letter-spacing: 0.32em;
+      }
+      .btn-ghost-dark {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        border: 1px solid rgba(40, 40, 40, 0.35);
+        color: #282828;
+        padding: 0.875rem 1.75rem;
+        font-size: 0.75rem;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        background: transparent;
+        transition: all 500ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .btn-ghost-dark:hover {
+        background: #282828;
+        color: #faf7f2;
+        letter-spacing: 0.32em;
+      }
+
+      /* Scrims — using brand BLACK at higher opacity so cream-50 text clears 4.5:1
+         even over the brightest possible photo content. Brown is too light to scrim
+         photos safely, so photo overlays stay black; the surrounding solid sections
+         use brand brown to keep the overall site feeling warm rather than inky. */
+      .scrim-bottom {
+        background: linear-gradient(
+          to bottom,
+          rgba(40, 40, 40, 0) 0%,
+          rgba(40, 40, 40, 0.3) 25%,
+          rgba(40, 40, 40, 0.7) 50%,
+          rgba(40, 40, 40, 0.88) 75%,
+          rgba(40, 40, 40, 0.95) 100%
+        );
+      }
+      .scrim-radial {
+        background: radial-gradient(
+          ellipse at center,
+          rgba(40, 40, 40, 0.25) 0%,
+          rgba(40, 40, 40, 0.7) 75%,
+          rgba(40, 40, 40, 0.95) 100%
+        );
+      }
+
+      /* Eyebrow style */
+      .eyebrow {
+        font-family: "JetBrains Mono", monospace;
+        text-transform: uppercase;
+        font-size: 11px;
+        letter-spacing: 0.32em;
+      }
+
+      /* Animations */
+      @keyframes ken-burns {
+        from {
+          transform: scale(1) translate(0, 0);
+        }
+        to {
+          transform: scale(1.08) translate(-1%, -1%);
+        }
+      }
+      .animate-ken-burns {
+        animation: ken-burns 20s ease-out both;
+      }
+
+      /* Scroll-hint arrow */
+      @keyframes scroll-hint {
+        0%, 100% {
+          transform: translateY(0);
+          opacity: 0.6;
+        }
+        50% {
+          transform: translateY(5px);
+          opacity: 1;
+        }
+      }
+      .scroll-arrow {
+        display: inline-block;
+        color: #faf7f2;
+        transition: opacity 500ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .scroll-arrow svg {
+        display: block;
+        animation: scroll-hint 2200ms ease-in-out infinite;
+      }
+      .scroll-arrow:hover {
+        opacity: 1 !important;
+      }
+      .scroll-arrow:hover svg {
+        animation-play-state: paused;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .scroll-arrow svg {
+          animation: none;
+        }
+      }
+
+      /* Scroll-fade — toggled by IntersectionObserver */
+      .reveal {
+        opacity: 0;
+        transform: translateY(28px);
+        transition: opacity 900ms cubic-bezier(0.16, 1, 0.3, 1),
+          transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+        transition-delay: var(--reveal-delay, 0ms);
+      }
+      .reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .reveal,
+        .animate-ken-burns {
+          opacity: 1 !important;
+          transform: none !important;
+          animation: none !important;
+        }
+      }
+
+      /* Status badge — appears top-left over property card photo */
+      .status-badge {
+        position: absolute;
+        top: 16px;
+        left: 16px;
+        background: rgba(250, 247, 242, 0.95);
+        color: #544743;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        padding: 6px 14px;
+        border-radius: 9999px;
+        z-index: 1;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+      }
+
+      /* Description in property card */
+      .card-description {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      /* Property card hover */
+      .card-link:hover .card-img {
+        transform: scale(1.05);
+      }
+      .card-img {
+        transition: transform 1400ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .card-link:hover .card-caption {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .card-caption {
+        opacity: 0;
+        transform: translateY(8px);
+        transition: opacity 500ms cubic-bezier(0.16, 1, 0.3, 1),
+          transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .card-link {
+        transition: box-shadow 700ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .card-link:hover {
+        box-shadow: 0 24px 60px -30px rgba(26, 20, 16, 0.45);
+      }
+
+      /* Perk panel hover */
+      .perk-link:hover .perk-img {
+        transform: scale(1.05);
+      }
+      .perk-img {
+        transition: transform 1800ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .perk-link:hover .perk-cta {
+        letter-spacing: 0.32em;
+      }
+      .perk-cta {
+        transition: letter-spacing 500ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      /* Nav transitions */
+      header.nav-shell {
+        transition: background-color 700ms cubic-bezier(0.16, 1, 0.3, 1),
+          border-color 700ms cubic-bezier(0.16, 1, 0.3, 1),
+          backdrop-filter 700ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      header.nav-shell .nav-text {
+        transition: color 500ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      /* Nav scrim — guarantees cream-50 text hits 4.5:1 over any photo.
+         Visible only when nav is in transparent (unscrolled) state. */
+      .nav-scrim {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 160px;
+        z-index: 49;
+        pointer-events: none;
+        background: linear-gradient(
+          to bottom,
+          rgba(40, 40, 40, 0.7) 0%,
+          rgba(40, 40, 40, 0.7) 50%,
+          rgba(40, 40, 40, 0) 100%
+        );
+        transition: opacity 700ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .nav-scrim.is-hidden {
+        opacity: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- LIVIANA wordmark — defined once as a symbol, referenced via <use> in nav and footer. -->
+    <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+      <symbol id="liviana-wordmark" viewBox="0 0 1096 200">
+        <path d="M170.458 200H97.2706C66.3857 200 64.3788 162.671 46.2269 148.735C41.3879 144.899 35.3225 143.093 29.6807 143.093C14.74 143.093 2.83204 155.402 2.83204 170.142C2.83204 184.881 14.74 197.19 29.6807 197.19C39.9831 197.19 46.2269 192.351 46.2269 176.408V156.026C57.7335 169.138 63.576 190.947 79.1188 200.022H29.6584C13.3128 200.022 0 186.509 0 170.164C0 153.819 13.3128 140.506 29.6584 140.506C35.9246 140.506 41.5663 142.335 46.2046 145.345V23.6147C46.2046 7.53707 40.0054 2.87657 29.7922 2.83198C29.7476 2.83198 23.4814 2.83198 23.4145 2.83198V0H103.671V2.83198C103.671 2.83198 97.3375 2.83198 97.2929 2.83198C87.5034 2.87657 81.1034 7.35868 80.9027 22.8119V180.845C80.9027 189.72 88.1724 197.19 97.0476 197.19H130.898C153.287 197.19 168.228 187.713 174.695 145.925H177.125C175.72 157.23 175.52 161.869 174.918 163.675V164.277C174.918 166.284 173.713 173.955 170.48 200H170.458Z"/>
+        <path d="M166.511 196.633C174.583 196.633 180.47 195.852 184.172 194.314C187.874 192.775 189.724 190.166 189.724 186.509V13.5132C189.724 9.85617 187.874 7.24718 184.172 5.70855C180.47 4.16992 174.583 3.38945 166.511 3.38945V0H242.24V3.36715C234.167 3.36715 228.28 4.14762 224.579 5.68625C220.877 7.22489 219.026 9.83387 219.026 13.4909V186.464C219.026 190.122 220.877 192.731 224.579 194.269C228.28 195.808 234.167 196.588 242.24 196.588V199.955H166.511V196.588V196.633Z"/>
+        <path d="M364.642 3.36715V0H440.371V3.36715C429.957 3.36715 421.684 5.61936 415.53 10.1238C409.375 14.6282 404.491 21.7639 400.834 31.5085L337.347 199.978H333.98L263.737 13.5132C262.243 9.47709 259.79 6.77891 256.422 5.41866C253.055 4.05842 247.324 3.36715 239.252 3.36715V0H314.981V3.36715C306.44 3.36715 300.263 4.10302 296.472 5.55246C292.681 7.0019 291.522 9.65548 293.016 13.4909L348.609 160.999L397.445 31.5085C400.812 22.4105 399.452 15.4309 393.364 10.6143C387.254 5.77545 377.687 3.36715 364.642 3.36715Z"/>
+        <path d="M437.383 196.633C445.456 196.633 451.343 195.852 455.044 194.314C458.746 192.775 460.597 190.166 460.597 186.509V13.5132C460.597 9.85617 458.746 7.24718 455.044 5.70855C451.343 4.16992 445.456 3.38945 437.383 3.38945V0H513.112V3.36715C505.04 3.36715 499.153 4.14762 495.451 5.68625C491.749 7.22489 489.899 9.83387 489.899 13.4909V186.464C489.899 190.122 491.749 192.731 495.451 194.269C499.153 195.808 505.04 196.588 513.112 196.588V199.955H437.383V196.588V196.633Z"/>
+        <path d="M553.341 167.912C549.862 177.121 551.178 184.19 557.288 189.163C563.376 194.135 572.92 196.633 585.853 196.633V200H510.124V196.633C520.538 196.633 528.811 194.381 534.966 189.876C541.121 185.372 546.027 178.236 549.684 168.491L549.817 167.934H549.684C550.442 166.061 550.999 164.701 551.378 163.853L613.014 0H616.538L686.781 186.487C688.275 190.523 690.728 193.221 694.095 194.581C697.463 195.942 703.194 196.611 711.266 196.611V199.978H635.537V196.611C644.078 196.611 650.21 195.875 653.979 194.425C657.725 192.976 658.862 190.322 657.346 186.464L635.113 127.216C634.556 128.71 633.575 130.539 632.147 132.702C629.137 137.028 624.722 140.172 618.924 142.134C613.103 144.096 607.038 145.345 600.683 145.858C594.327 146.371 588.061 147.062 581.817 147.887C575.573 148.712 569.842 150.764 564.647 153.93C559.429 157.119 555.66 161.757 553.318 167.867L553.341 167.912ZM621.733 91.9166L601.887 38.8449L558.537 153.975C561.904 150.697 566.118 148.222 571.136 146.594C576.153 144.966 581.104 143.873 585.987 143.36C590.871 142.848 595.732 142.201 600.549 141.465C605.388 140.707 609.959 139.213 614.285 136.961C618.589 134.708 622.113 131.475 624.833 127.238C629.048 120.571 628.022 108.797 621.733 91.9166Z"/>
+        <path d="M752.609 0L868.456 175.806V36.8826C868.456 24.5958 866.359 15.9438 862.189 10.9265C858.019 5.90924 851.04 3.38945 841.295 3.38945V0H899.006V3.36715C889.239 3.36715 882.281 5.88694 878.111 10.9042C873.941 15.9215 871.845 24.5735 871.845 36.8603V163.117C871.845 175.404 873.919 184.056 878.111 189.096C882.304 194.135 889.261 196.633 899.006 196.633V200H855.098L738.003 22.2321V163.117C738.003 175.404 740.077 184.056 744.269 189.096C748.439 194.113 755.419 196.633 765.164 196.633V200H707.453V196.633C717.22 196.633 724.178 194.135 728.348 189.096C732.518 184.078 734.614 175.426 734.614 163.117V36.8826C734.614 24.5958 732.518 15.9438 728.348 10.9265C724.178 5.90924 717.198 3.38945 707.453 3.38945V0H752.632H752.609Z"/>
+        <path d="M938.075 167.912C934.596 177.121 935.912 184.19 942.022 189.163C948.11 194.135 957.654 196.633 970.587 196.633V200H894.858V196.633C905.272 196.633 913.545 194.381 919.7 189.876C925.855 185.372 930.76 178.236 934.418 168.491L934.551 167.934H934.418C935.176 166.061 935.733 164.701 936.112 163.853L997.771 0H1001.29L1071.54 186.487C1073.03 190.523 1075.48 193.221 1078.85 194.581C1082.22 195.942 1087.95 196.611 1096.02 196.611V199.978H1020.29V196.611C1028.83 196.611 1034.97 195.875 1038.73 194.425C1042.48 192.976 1043.62 190.322 1042.1 186.464L1019.87 127.216C1019.31 128.71 1018.33 130.539 1016.9 132.702C1013.89 137.028 1009.48 140.172 1003.68 142.134C997.86 144.096 991.794 145.345 985.439 145.858C979.084 146.371 972.817 147.062 966.574 147.887C960.33 148.712 954.599 150.764 949.403 153.93C944.185 157.119 940.416 161.757 938.075 167.867V167.912ZM1006.49 91.9166L986.643 38.8449L943.293 153.975C946.66 150.697 950.875 148.222 955.892 146.594C960.909 144.966 965.86 143.873 970.744 143.36C975.627 142.848 980.488 142.201 985.305 141.465C990.144 140.707 994.716 139.213 999.042 136.961C1003.35 134.708 1006.87 131.475 1009.59 127.238C1013.8 120.571 1012.78 108.797 1006.49 91.9166Z"/>
+      </symbol>
+    </svg>
+
+    <!-- Nav scrim — under nav z-50, ensures 5.8:1 contrast for cream-50 nav text over hero photo. Fades out on scroll. -->
+    <div id="nav-scrim" class="nav-scrim"></div>
+
+    <!-- ================= NAV ================= -->
+    <header
+      id="nav"
+      class="nav-shell fixed top-0 inset-x-0 z-50 bg-transparent"
+    >
+      <nav
+        class="mx-auto max-w-[1600px] flex items-center justify-between px-6 lg:px-12 h-20"
+      >
+        <a
+          href="#"
+          class="nav-text block text-cream-50"
+          data-light="text-cream-50"
+          data-dark="text-ink"
+          aria-label="Liviana — home"
+        >
+          <svg
+            class="h-5 w-auto"
+            viewBox="0 0 1096 200"
+            fill="currentColor"
+            role="img"
+            aria-hidden="true"
+          >
+            <use href="#liviana-wordmark" />
+          </svg>
+        </a>
+
+        <ul class="hidden md:flex items-center gap-10">
+          <li>
+            <a
+              href="#"
+              class="nav-text text-xs uppercase tracking-widest text-cream-50 hover:opacity-70"
+              data-light="text-cream-50"
+              data-dark="text-ink"
+              >Explore Membership</a
+            >
+          </li>
+          <li>
+            <a
+              href="#"
+              class="nav-text text-xs uppercase tracking-widest text-cream-50 hover:opacity-70"
+              data-light="text-cream-50"
+              data-dark="text-ink"
+              >List Your Property</a
+            >
+          </li>
+          <li>
+            <a
+              href="#"
+              class="nav-text text-xs uppercase tracking-widest text-cream-50 hover:opacity-70"
+              data-light="text-cream-50"
+              data-dark="text-ink"
+              >Browse Rentals</a
+            >
+          </li>
+        </ul>
+
+        <div class="hidden md:flex items-center gap-4">
+          <a
+            href="#"
+            class="nav-text text-xs uppercase tracking-widest text-cream-50"
+            data-light="text-cream-50"
+            data-dark="text-ink"
+            >Login</a
+          >
+          <a
+            id="nav-cta"
+            href="#"
+            class="text-xs uppercase tracking-widest px-5 py-2.5 bg-cream-50 text-ink transition-colors duration-500"
+            >Apply Now</a
+          >
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <!-- ================= HERO ================= -->
+      <section
+        class="relative h-screen min-h-[720px] w-full overflow-hidden bg-espresso-900 text-cream-50"
+      >
+        <div class="absolute inset-0 animate-ken-burns">
+          <img
+            src="https://livianaco.com/assets/nurse-hero-CAFcjoPF.png"
+            alt="A Liviana nurse, at ease"
+            class="w-full h-full object-cover"
+            style="transform: scaleX(-1);"
+          />
+        </div>
+        <div class="absolute inset-0 scrim-bottom"></div>
+
+        <div
+          class="relative h-full mx-auto max-w-[1600px] px-6 lg:px-12 pt-32 pb-12 flex flex-col justify-end"
+        >
+          <div class="max-w-3xl">
+            <span class="reveal eyebrow text-cream-50/70"
+              >Membership · Est. 2025</span
+            >
+            <h1
+              class="reveal mt-6 font-display font-light leading-[0.95] tracking-tight"
+              style="font-size: clamp(3rem, 8vw, 7.5rem); --reveal-delay: 100ms"
+            >
+              Curated housing<br />for nurses.
+              <span class="italic text-warm-200">Liv beyond the shift.</span>
+            </h1>
+            <p
+              class="reveal mt-8 max-w-xl text-base lg:text-lg leading-relaxed text-cream-50/80"
+              style="--reveal-delay: 250ms"
+            >
+              A luxury housing and lifestyle service transforming the
+              experience of traveling healthcare professionals.
+            </p>
+            <div class="reveal mt-12 flex flex-wrap gap-4" style="--reveal-delay: 400ms">
+              <a href="#" class="btn-primary btn-light"
+                >Apply for Membership <span aria-hidden>→</span></a
+              >
+              <a href="#" class="btn-ghost">Browse Rentals</a>
+            </div>
+          </div>
+
+          <div class="mt-16 flex justify-center">
+            <a
+              href="#perks"
+              class="scroll-arrow"
+              aria-label="Scroll to explore"
+            >
+              <svg
+                width="14"
+                height="22"
+                viewBox="0 0 14 22"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M7 2 L7 17" />
+                <path d="M2 12 L7 17 L12 12" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= MEMBERSHIP PERKS ================= -->
+      <section id="perks" class="bg-espresso text-cream-50">
+        <div class="mx-auto max-w-[1600px] px-6 lg:px-12 pt-24 pb-12">
+          <span class="reveal eyebrow text-cream-50/70">Membership Perks</span>
+          <h2
+            class="reveal mt-4 font-display font-light leading-[1] tracking-tight max-w-4xl"
+            style="font-size: clamp(2.5rem, 5.5vw, 5rem); --reveal-delay: 100ms"
+          >
+            Three pillars of a Liviana stay.
+          </h2>
+        </div>
+
+        <div
+          class="grid grid-cols-1 lg:grid-cols-3 lg:h-[80vh] lg:min-h-[680px]"
+        >
+          <!-- Perk 1 -->
+          <a
+            href="#"
+            class="perk-link relative group h-[70vh] lg:h-full block overflow-hidden reveal"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1615874959474-d609969a20ed?auto=format&fit=crop&w=1600&q=80"
+              alt="A warm, thoughtfully styled bedroom"
+              class="perk-img absolute inset-0 w-full h-full object-cover"
+            />
+            <div class="absolute inset-0 scrim-bottom"></div>
+            <div class="absolute inset-0 p-8 lg:p-10 flex flex-col justify-end">
+              <span class="eyebrow text-cream-50/70">01 / Concierge</span>
+              <h3
+                class="mt-4 font-display font-light text-3xl lg:text-4xl leading-[1.1] max-w-sm"
+              >
+                Lived-in support, white-glove standard
+              </h3>
+              <p class="mt-4 max-w-sm text-sm leading-relaxed text-cream-50/75">
+                We ensure nurses feel supported, settled, and cared for while
+                owners enjoy effortless management through coordinated cleaning,
+                maintenance, and property care.
+              </p>
+              <span
+                class="perk-cta mt-6 inline-flex items-center gap-3 eyebrow text-cream-50"
+                >Learn more <span aria-hidden>→</span></span
+              >
+            </div>
+          </a>
+
+          <!-- Perk 2 -->
+          <a
+            href="#"
+            class="perk-link relative group h-[70vh] lg:h-full block overflow-hidden reveal"
+            style="--reveal-delay: 100ms"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=1600&q=80"
+              alt="A curated residence with thoughtful styling"
+              class="perk-img absolute inset-0 w-full h-full object-cover"
+            />
+            <div class="absolute inset-0 scrim-bottom"></div>
+            <div class="absolute inset-0 p-8 lg:p-10 flex flex-col justify-end">
+              <span class="eyebrow text-cream-50/70">02 / Residences</span>
+              <h3
+                class="mt-4 font-display font-light text-3xl lg:text-4xl leading-[1.1] max-w-sm"
+              >
+                An exclusive, curated rental search
+              </h3>
+              <p class="mt-4 max-w-sm text-sm leading-relaxed text-cream-50/75">
+                Our collection is intentionally curated and rigorously inspected
+                to uphold a higher standard. Signature bedding, refined
+                finishes, and a sense of belonging in every home.
+              </p>
+              <span
+                class="perk-cta mt-6 inline-flex items-center gap-3 eyebrow text-cream-50"
+                >Learn more <span aria-hidden>→</span></span
+              >
+            </div>
+          </a>
+
+          <!-- Perk 3 -->
+          <a
+            href="#"
+            class="perk-link relative group h-[70vh] lg:h-full block overflow-hidden reveal"
+            style="--reveal-delay: 200ms"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&w=1600&q=80"
+              alt="A mid-century property ready to list"
+              class="perk-img absolute inset-0 w-full h-full object-cover"
+            />
+            <div class="absolute inset-0 scrim-bottom"></div>
+            <div class="absolute inset-0 p-8 lg:p-10 flex flex-col justify-end">
+              <span class="eyebrow text-cream-50/70">03 / Listing</span>
+              <h3
+                class="mt-4 font-display font-light text-3xl lg:text-4xl leading-[1.1] max-w-sm"
+              >
+                A trusted home for your property
+              </h3>
+              <p class="mt-4 max-w-sm text-sm leading-relaxed text-cream-50/75">
+                Your property is showcased within a private, professionally
+                vetted community of nurses seeking premium, fully furnished
+                residences.
+              </p>
+              <span
+                class="perk-cta mt-6 inline-flex items-center gap-3 eyebrow text-cream-50"
+                >Learn more <span aria-hidden>→</span></span
+              >
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <!-- ================= FEATURED RESIDENCES ================= -->
+      <section class="bg-cream text-ink">
+        <div class="mx-auto max-w-[1600px] px-6 lg:px-12 py-24 lg:py-32">
+          <div
+            class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-16"
+          >
+            <div class="max-w-2xl">
+              <span class="reveal eyebrow text-ink/70">Available Now</span>
+              <h2
+                class="reveal mt-4 font-display font-light leading-[1] tracking-tight"
+                style="font-size: clamp(2.5rem, 5vw, 4.5rem); --reveal-delay: 100ms"
+              >
+                Curated residences,<br />ready when you arrive.
+              </h2>
+            </div>
+            <a href="#" class="reveal btn-ghost-dark" style="--reveal-delay: 200ms"
+              >Browse All <span aria-hidden>→</span></a
+            >
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+            <!-- Card 1 — The Luna -->
+            <a
+              href="#"
+              class="card-link group block bg-cream-50 text-ink reveal"
+            >
+              <div class="relative aspect-[3/2] overflow-hidden bg-espresso-700">
+                <img
+                  src="https://mxyjqeiodayfpaulctgb.supabase.co/storage/v1/render/image/public/property-images/the-luna/1774366177196-kmt1or.jpg"
+                  alt="The Luna — warm textures and soft lighting"
+                  class="card-img absolute inset-0 w-full h-full object-cover"
+                />
+                <span class="status-badge">Waitlist</span>
+              </div>
+              <div class="p-6 lg:p-7 flex flex-col gap-5">
+                <div class="flex items-center gap-2 text-cocoa">
+                  <svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="opacity-80 shrink-0" aria-hidden="true">
+                    <path d="M6 13 C6 13 1.5 8.5 1.5 5 C1.5 2.5 3.5 1 6 1 C8.5 1 10.5 2.5 10.5 5 C10.5 8.5 6 13 6 13 Z"/>
+                    <circle cx="6" cy="5" r="1.6"/>
+                  </svg>
+                  <span class="eyebrow text-cocoa">Nashville, TN</span>
+                </div>
+                <h3
+                  class="font-display font-light text-3xl lg:text-[2rem] leading-[1.1] tracking-tight"
+                >
+                  The Luna
+                </h3>
+                <ul class="flex items-center gap-6 text-ink/80">
+                  <li class="flex items-center gap-2">
+                    <svg width="16" height="13" viewBox="0 0 16 13" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="opacity-70 shrink-0" aria-hidden="true">
+                      <path d="M1 12 L1 4 L15 4 L15 12"/>
+                      <path d="M1 8 L15 8"/>
+                      <rect x="3" y="6" width="3" height="2"/>
+                    </svg>
+                    <span class="text-sm">2 Beds</span>
+                  </li>
+                  <li class="flex items-center gap-2">
+                    <svg width="16" height="13" viewBox="0 0 16 13" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="opacity-70 shrink-0" aria-hidden="true">
+                      <path d="M1 6 L15 6 L15 9 C15 10.5 13.5 11 12 11 L4 11 C2.5 11 1 10.5 1 9 Z"/>
+                      <path d="M3 6 L3 3 C3 1.8 3.8 1 5 1 C6.2 1 7 1.8 7 3"/>
+                    </svg>
+                    <span class="text-sm">2 Baths</span>
+                  </li>
+                </ul>
+                <p class="card-description text-sm leading-relaxed text-ink/75">
+                  The Luna blends warm textures, soft lighting, and thoughtful
+                  design to create a space that feels both elevated and
+                  effortless. Part of the Liviana Collection at the heart of
+                  Nashville.
+                </p>
+                <div class="h-px w-full bg-ink/20"></div>
+                <div class="flex items-end justify-between gap-4">
+                  <div class="flex flex-col">
+                    <span class="font-mono text-sm text-ink">
+                      $3,900<span class="text-ink/70"> / mo</span>
+                    </span>
+                    <span class="eyebrow text-ink/70">$1,950 per person</span>
+                  </div>
+                  <span class="eyebrow text-cocoa inline-flex items-center gap-2 transition-all duration-500 group-hover:tracking-ultra">
+                    View Details
+                    <span aria-hidden>→</span>
+                  </span>
+                </div>
+              </div>
+            </a>
+
+            <!-- Card 2 — The Olive -->
+            <a
+              href="#"
+              class="card-link group block bg-cream-50 text-ink reveal"
+              style="--reveal-delay: 80ms"
+            >
+              <div class="relative aspect-[3/2] overflow-hidden bg-espresso-700">
+                <img
+                  src="https://mxyjqeiodayfpaulctgb.supabase.co/storage/v1/render/image/public/property-images/the-olive/1774366597521-uw42fa.jpg"
+                  alt="The Olive — warm tones and relaxed sophistication"
+                  class="card-img absolute inset-0 w-full h-full object-cover"
+                />
+                <span class="status-badge">Available</span>
+              </div>
+              <div class="p-6 lg:p-7 flex flex-col gap-5">
+                <div class="flex items-center gap-2 text-cocoa">
+                  <svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="opacity-80 shrink-0" aria-hidden="true">
+                    <path d="M6 13 C6 13 1.5 8.5 1.5 5 C1.5 2.5 3.5 1 6 1 C8.5 1 10.5 2.5 10.5 5 C10.5 8.5 6 13 6 13 Z"/>
+                    <circle cx="6" cy="5" r="1.6"/>
+                  </svg>
+                  <span class="eyebrow text-cocoa">Nashville, TN</span>
+                </div>
+                <h3
+                  class="font-display font-light text-3xl lg:text-[2rem] leading-[1.1] tracking-tight"
+                >
+                  The Olive
+                </h3>
+                <ul class="flex items-center gap-6 text-ink/80">
+                  <li class="flex items-center gap-2">
+                    <svg width="16" height="13" viewBox="0 0 16 13" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="opacity-70 shrink-0" aria-hidden="true">
+                      <path d="M1 12 L1 4 L15 4 L15 12"/>
+                      <path d="M1 8 L15 8"/>
+                      <rect x="3" y="6" width="3" height="2"/>
+                    </svg>
+                    <span class="text-sm">2 Beds</span>
+                  </li>
+                  <li class="flex items-center gap-2">
+                    <svg width="16" height="13" viewBox="0 0 16 13" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="opacity-70 shrink-0" aria-hidden="true">
+                      <path d="M1 6 L15 6 L15 9 C15 10.5 13.5 11 12 11 L4 11 C2.5 11 1 10.5 1 9 Z"/>
+                      <path d="M3 6 L3 3 C3 1.8 3.8 1 5 1 C6.2 1 7 1.8 7 3"/>
+                    </svg>
+                    <span class="text-sm">2 Baths</span>
+                  </li>
+                </ul>
+                <p class="card-description text-sm leading-relaxed text-ink/75">
+                  Warm tones and relaxed sophistication define the Olive House.
+                  This residence was designed to feel welcoming from the moment
+                  you arrive — a place to settle in, cook a meal, and rest
+                  fully.
+                </p>
+                <div class="h-px w-full bg-ink/20"></div>
+                <div class="flex items-end justify-between gap-4">
+                  <div class="flex flex-col">
+                    <span class="font-mono text-sm text-ink">
+                      $3,900<span class="text-ink/70"> / mo</span>
+                    </span>
+                    <span class="eyebrow text-ink/70">$1,950 per person</span>
+                  </div>
+                  <span class="eyebrow text-cocoa inline-flex items-center gap-2 transition-all duration-500 group-hover:tracking-ultra">
+                    View Details
+                    <span aria-hidden>→</span>
+                  </span>
+                </div>
+              </div>
+            </a>
+
+            <!-- Card 3 — The Sereno -->
+            <a
+              href="#"
+              class="card-link group block bg-cream-50 text-ink reveal"
+              style="--reveal-delay: 160ms"
+            >
+              <div class="relative aspect-[3/2] overflow-hidden bg-espresso-700">
+                <img
+                  src="https://mxyjqeiodayfpaulctgb.supabase.co/storage/v1/render/image/public/property-images/the-sereno/1774365073112-r0usrh.jpg"
+                  alt="The Sereno — clean lines and neutral textures"
+                  class="card-img absolute inset-0 w-full h-full object-cover"
+                />
+                <span class="status-badge">Waitlist</span>
+              </div>
+              <div class="p-6 lg:p-7 flex flex-col gap-5">
+                <div class="flex items-center gap-2 text-cocoa">
+                  <svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="opacity-80 shrink-0" aria-hidden="true">
+                    <path d="M6 13 C6 13 1.5 8.5 1.5 5 C1.5 2.5 3.5 1 6 1 C8.5 1 10.5 2.5 10.5 5 C10.5 8.5 6 13 6 13 Z"/>
+                    <circle cx="6" cy="5" r="1.6"/>
+                  </svg>
+                  <span class="eyebrow text-cocoa">Nashville, TN</span>
+                </div>
+                <h3
+                  class="font-display font-light text-3xl lg:text-[2rem] leading-[1.1] tracking-tight"
+                >
+                  The Sereno
+                </h3>
+                <ul class="flex items-center gap-6 text-ink/80">
+                  <li class="flex items-center gap-2">
+                    <svg width="16" height="13" viewBox="0 0 16 13" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="opacity-70 shrink-0" aria-hidden="true">
+                      <path d="M1 12 L1 4 L15 4 L15 12"/>
+                      <path d="M1 8 L15 8"/>
+                      <rect x="3" y="6" width="3" height="2"/>
+                    </svg>
+                    <span class="text-sm">Studio</span>
+                  </li>
+                  <li class="flex items-center gap-2">
+                    <svg width="16" height="13" viewBox="0 0 16 13" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="opacity-70 shrink-0" aria-hidden="true">
+                      <path d="M1 6 L15 6 L15 9 C15 10.5 13.5 11 12 11 L4 11 C2.5 11 1 10.5 1 9 Z"/>
+                      <path d="M3 6 L3 3 C3 1.8 3.8 1 5 1 C6.2 1 7 1.8 7 3"/>
+                    </svg>
+                    <span class="text-sm">1 Bath</span>
+                  </li>
+                </ul>
+                <p class="card-description text-sm leading-relaxed text-ink/75">
+                  The Sereno offers a peaceful escape above the energy of
+                  Nashville. Clean lines, neutral textures, and curated
+                  furnishings create a calm environment perfect for travel
+                  professionals.
+                </p>
+                <div class="h-px w-full bg-ink/20"></div>
+                <div class="flex items-end justify-between gap-4">
+                  <div class="flex flex-col">
+                    <span class="font-mono text-sm text-ink">
+                      $2,900<span class="text-ink/70"> / mo</span>
+                    </span>
+                  </div>
+                  <span class="eyebrow text-cocoa inline-flex items-center gap-2 transition-all duration-500 group-hover:tracking-ultra">
+                    View Details
+                    <span aria-hidden>→</span>
+                  </span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PROPERTY CONSIDERATION ================= -->
+      <section
+        class="relative h-screen min-h-[560px] flex items-center justify-center bg-espresso-900 text-cream-50 overflow-hidden"
+      >
+        <div class="absolute inset-0 opacity-30">
+          <img
+            src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=2400&q=80"
+            alt=""
+            class="w-full h-full object-cover"
+          />
+        </div>
+        <div class="absolute inset-0 scrim-radial"></div>
+        <div class="relative text-center px-6 max-w-3xl">
+          <span class="reveal eyebrow text-cream-50/70">For Property Owners</span>
+          <h2
+            class="reveal mt-6 font-display font-light leading-[0.95] tracking-tight"
+            style="font-size: clamp(2.5rem, 6vw, 5.5rem); --reveal-delay: 100ms"
+          >
+            Request property<br /><span class="italic text-warm-200"
+              >consideration.</span
+            >
+          </h2>
+          <p
+            class="reveal mt-8 text-base lg:text-lg leading-relaxed text-cream-50/80 max-w-xl mx-auto"
+            style="--reveal-delay: 250ms"
+          >
+            Homes are reviewed and accepted by application. Share your property
+            details and our team will be in touch.
+          </p>
+          <div class="reveal mt-12" style="--reveal-delay: 400ms">
+            <a href="#" class="btn-primary btn-light"
+              >Learn More <span aria-hidden>→</span></a
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= WHY NURSES LOVE LIVIANA ================= -->
+      <section class="grid grid-cols-1 lg:grid-cols-12 lg:min-h-screen bg-espresso-700">
+        <div class="relative lg:col-span-6 h-[60vh] lg:h-auto">
+          <img
+            src="https://livianaco.com/assets/liviana-living-BaqSQHmI.jpg"
+            alt="A Liviana nurse at home"
+            class="w-full h-full object-cover absolute inset-0"
+            style="transform: scaleX(-1);"
+          />
+        </div>
+        <div
+          class="lg:col-span-6 bg-espresso-700 text-cream-50 px-6 lg:px-16 py-20 lg:py-28 flex flex-col justify-center"
+        >
+          <span class="reveal eyebrow text-cream-50/70">Why Nurses Love Liviana</span>
+          <h2
+            class="reveal mt-6 font-display font-light leading-[1.05] tracking-tight max-w-lg"
+            style="font-size: clamp(2.25rem, 4.5vw, 4rem); --reveal-delay: 100ms"
+          >
+            Designed around the
+            <span class="italic text-warm-200">realities of the shift.</span>
+          </h2>
+
+          <ul class="mt-12 lg:mt-16 space-y-10 lg:space-y-12 max-w-xl">
+            <li
+              class="reveal grid grid-cols-[auto_1fr] gap-6 lg:gap-8 border-t border-cream-50/15 pt-6"
+              style="--reveal-delay: 180ms"
+            >
+              <span class="eyebrow text-cream-50/50">01</span>
+              <div>
+                <h3 class="font-display font-light text-2xl lg:text-[1.75rem] leading-tight">
+                  Curated, Consistent Living
+                </h3>
+                <p class="mt-3 text-sm lg:text-base leading-relaxed text-cream-50/75">
+                  Every residence is thoughtfully inspected and held to a
+                  consistent standard so nurses can arrive knowing exactly what
+                  to expect.
+                </p>
+              </div>
+            </li>
+            <li
+              class="reveal grid grid-cols-[auto_1fr] gap-6 lg:gap-8 border-t border-cream-50/15 pt-6"
+              style="--reveal-delay: 260ms"
+            >
+              <span class="eyebrow text-cream-50/50">02</span>
+              <div>
+                <h3 class="font-display font-light text-2xl lg:text-[1.75rem] leading-tight">
+                  Locations That Make Life Easier
+                </h3>
+                <p class="mt-3 text-sm lg:text-base leading-relaxed text-cream-50/75">
+                  Homes are selected in well-connected neighborhoods near major
+                  and rural hospitals. Shorter commutes, easier routines, time
+                  back.
+                </p>
+              </div>
+            </li>
+            <li
+              class="reveal grid grid-cols-[auto_1fr] gap-6 lg:gap-8 border-t border-cream-50/15 pt-6"
+              style="--reveal-delay: 340ms"
+            >
+              <span class="eyebrow text-cream-50/50">03</span>
+              <div>
+                <h3 class="font-display font-light text-2xl lg:text-[1.75rem] leading-tight">
+                  Concierge Support For Your Schedule
+                </h3>
+                <p class="mt-3 text-sm lg:text-base leading-relaxed text-cream-50/75">
+                  Built around the realities of nursing life. From move-in to
+                  everyday support, we handle the details so you can rest.
+                </p>
+              </div>
+            </li>
+            <li
+              class="reveal grid grid-cols-[auto_1fr] gap-6 lg:gap-8 border-t border-cream-50/15 pt-6"
+              style="--reveal-delay: 420ms"
+            >
+              <span class="eyebrow text-cream-50/50">04</span>
+              <div>
+                <h3 class="font-display font-light text-2xl lg:text-[1.75rem] leading-tight">
+                  A Platform Built For Nurses
+                </h3>
+                <p class="mt-3 text-sm lg:text-base leading-relaxed text-cream-50/75">
+                  Unlike traditional rental platforms, every detail — from
+                  verified residences to thoughtful services — is designed for
+                  the way nurses live.
+                </p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ================= FINAL CTA ================= -->
+      <section
+        class="relative h-screen min-h-[640px] flex items-center justify-center overflow-hidden bg-espresso-900 text-cream-50"
+      >
+        <div class="absolute inset-0 animate-ken-burns">
+          <img
+            src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=2400&q=80"
+            alt=""
+            class="w-full h-full object-cover"
+          />
+        </div>
+        <div class="absolute inset-0 scrim-radial"></div>
+        <div class="relative text-center px-6 max-w-4xl">
+          <span class="reveal eyebrow text-cream-50/70">Begin Your Membership</span>
+          <h2
+            class="reveal mt-6 font-display font-light leading-[0.95] tracking-tight"
+            style="font-size: clamp(3rem, 8vw, 8rem); --reveal-delay: 150ms"
+          >
+            Liv beyond<br /><span class="italic text-warm-200">the shift.</span>
+          </h2>
+          <div class="reveal mt-14 flex flex-wrap gap-4 justify-center" style="--reveal-delay: 350ms">
+            <a href="#" class="btn-primary btn-light"
+              >Apply for Membership <span aria-hidden>→</span></a
+            >
+            <a href="#" class="btn-ghost">Browse Rentals</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="bg-espresso-900 text-cream-50">
+      <div
+        class="mx-auto max-w-[1600px] px-6 lg:px-12 py-24 grid grid-cols-1 md:grid-cols-12 gap-16"
+      >
+        <div class="md:col-span-5">
+          <svg
+            class="h-10 w-auto text-cream-50"
+            viewBox="0 0 1096 200"
+            fill="currentColor"
+            role="img"
+            aria-label="Liviana"
+          >
+            <use href="#liviana-wordmark" />
+          </svg>
+          <p class="mt-6 max-w-sm text-sm leading-relaxed text-cream-50/70">
+            Curated housing for traveling nurses. A community of homes,
+            thoughtfully held to a higher standard.
+          </p>
+          <div class="mt-10">
+            <span class="eyebrow text-cream-50/70">Contact</span>
+            <a
+              href="mailto:info@liviana.com"
+              class="mt-3 block font-display text-2xl tracking-wide hover:text-warm-200 transition-colors"
+              >info@liviana.com</a
+            >
+          </div>
+        </div>
+
+        <div class="md:col-span-2">
+          <span class="eyebrow text-cream-50/70">Liviana</span>
+          <ul class="mt-5 space-y-3 text-sm text-cream-50/80">
+            <li><a href="#" class="hover:text-cream-50">Home</a></li>
+            <li><a href="#" class="hover:text-cream-50">Explore Membership</a></li>
+            <li><a href="#" class="hover:text-cream-50">List Your Property</a></li>
+            <li><a href="#" class="hover:text-cream-50">Browse Rentals</a></li>
+          </ul>
+        </div>
+
+        <div class="md:col-span-2">
+          <span class="eyebrow text-cream-50/70">Company</span>
+          <ul class="mt-5 space-y-3 text-sm text-cream-50/80">
+            <li><a href="#" class="hover:text-cream-50">FAQ</a></li>
+            <li><a href="#" class="hover:text-cream-50">Partnerships</a></li>
+            <li><a href="#" class="hover:text-cream-50">Login</a></li>
+            <li><a href="#" class="hover:text-cream-50">Apply Now</a></li>
+          </ul>
+        </div>
+
+        <div class="md:col-span-3">
+          <span class="eyebrow text-cream-50/70">Follow</span>
+          <ul class="mt-5 space-y-3 text-sm text-cream-50/80">
+            <li><a href="#" class="hover:text-cream-50 inline-flex items-center gap-3">Facebook <span aria-hidden>→</span></a></li>
+            <li><a href="#" class="hover:text-cream-50 inline-flex items-center gap-3">Instagram <span aria-hidden>→</span></a></li>
+            <li><a href="#" class="hover:text-cream-50 inline-flex items-center gap-3">TikTok <span aria-hidden>→</span></a></li>
+            <li><a href="#" class="hover:text-cream-50 inline-flex items-center gap-3">LinkedIn <span aria-hidden>→</span></a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-cream-50/10">
+        <div
+          class="mx-auto max-w-[1600px] px-6 lg:px-12 py-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
+        >
+          <p class="eyebrow text-cream-50/50">© 2026 Liviana · Est. 2025</p>
+          <ul class="flex gap-8 eyebrow text-cream-50/50">
+            <li><a href="#" class="hover:text-cream-50">Terms</a></li>
+            <li><a href="#" class="hover:text-cream-50">Privacy</a></li>
+            <li><a href="#" class="hover:text-cream-50">Cookies</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Scroll reveal
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              io.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.2 }
+      );
+      document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+
+      // Nav scroll state
+      const nav = document.getElementById("nav");
+      const navScrim = document.getElementById("nav-scrim");
+      const navTexts = document.querySelectorAll(".nav-text");
+      const navCta = document.getElementById("nav-cta");
+
+      function applyNavState() {
+        const scrolled = window.scrollY > 24;
+        if (scrolled) {
+          nav.classList.remove("bg-transparent");
+          nav.classList.add(
+            "bg-cream/95",
+            "backdrop-blur-md",
+            "border-b",
+            "border-cream-200"
+          );
+          navScrim.classList.add("is-hidden");
+          navTexts.forEach((el) => {
+            el.classList.remove("text-cream-50");
+            el.classList.add("text-ink");
+          });
+          navCta.classList.remove("bg-cream-50", "text-ink");
+          navCta.classList.add("bg-espresso", "text-cream-50");
+        } else {
+          nav.classList.add("bg-transparent");
+          nav.classList.remove(
+            "bg-cream/95",
+            "backdrop-blur-md",
+            "border-b",
+            "border-cream-200"
+          );
+          navScrim.classList.remove("is-hidden");
+          navTexts.forEach((el) => {
+            el.classList.add("text-cream-50");
+            el.classList.remove("text-ink");
+          });
+          navCta.classList.add("bg-cream-50", "text-ink");
+          navCta.classList.remove("bg-espresso", "text-cream-50");
+        }
+      }
+      applyNavState();
+      window.addEventListener("scroll", applyNavState, { passive: true });
+    </script>
+  </body>
+</html>
