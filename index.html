@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Manrope:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
 
@@ -57,9 +57,9 @@
               },
             },
             fontFamily: {
-              display: ['"Cormorant Garamond"', "serif"],
-              sans: ["Inter", "system-ui", "sans-serif"],
-              mono: ['"JetBrains Mono"', "ui-monospace", "monospace"],
+              display: ['"Playfair Display"', "serif"],
+              sans: ["Manrope", "system-ui", "sans-serif"],
+              mono: ['"DM Mono"', "ui-monospace", "monospace"],
             },
             letterSpacing: {
               widest: "0.24em",
@@ -86,9 +86,13 @@
         scroll-behavior: smooth;
       }
       body {
-        font-family: "Inter", system-ui, sans-serif;
+        font-family: "Manrope", system-ui, sans-serif;
         background: #f3eeea;
         color: #282828;
+        /* +0.02em adds a breath of air across Manrope body copy — descriptions,
+           hero subhead, perk paragraphs, etc. Headlines (Playfair) and mono
+           labels override via their own tracking utilities. */
+        letter-spacing: 0.02em;
       }
       button,
       input,
@@ -112,7 +116,7 @@
         font-size: 0.75rem;
         letter-spacing: 0.24em;
         text-transform: uppercase;
-        font-family: "Inter", sans-serif;
+        font-family: "Manrope", sans-serif;
         transition: all 500ms cubic-bezier(0.16, 1, 0.3, 1);
       }
       .btn-primary:hover {
@@ -201,7 +205,7 @@
 
       /* Eyebrow style */
       .eyebrow {
-        font-family: "JetBrains Mono", monospace;
+        font-family: "DM Mono", monospace;
         text-transform: uppercase;
         font-size: 11px;
         letter-spacing: 0.32em;
@@ -252,17 +256,21 @@
         }
       }
 
-      /* Scroll-fade — toggled by IntersectionObserver */
+      /* Scroll-fade — toggled by IntersectionObserver.
+         Uses @keyframes animation instead of CSS transition so it doesn't
+         override the `transition` property on buttons that also carry .reveal
+         (e.g. the Browse All ghost-dark CTA). */
+      @keyframes reveal-in {
+        from { opacity: 0; transform: translateY(28px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
       .reveal {
         opacity: 0;
         transform: translateY(28px);
-        transition: opacity 900ms cubic-bezier(0.16, 1, 0.3, 1),
-          transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
-        transition-delay: var(--reveal-delay, 0ms);
       }
       .reveal.is-visible {
-        opacity: 1;
-        transform: translateY(0);
+        animation: reveal-in 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+        animation-delay: var(--reveal-delay, 0ms);
       }
       @media (prefers-reduced-motion: reduce) {
         .reveal,
@@ -280,7 +288,7 @@
         left: 16px;
         background: rgba(250, 247, 242, 0.95);
         color: #544743;
-        font-family: "JetBrains Mono", monospace;
+        font-family: "DM Mono", monospace;
         font-size: 10px;
         letter-spacing: 0.16em;
         text-transform: uppercase;
@@ -330,11 +338,15 @@
       .perk-img {
         transition: transform 1800ms cubic-bezier(0.16, 1, 0.3, 1);
       }
+      /* perk-cta starts narrower (0.24em) and widens to 0.32em on parent hover —
+         matches the property card "View Details" hover treatment.
+         Default letter-spacing overrides the .eyebrow class's 0.32em. */
+      .perk-cta {
+        letter-spacing: 0.24em;
+        transition: letter-spacing 500ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
       .perk-link:hover .perk-cta {
         letter-spacing: 0.32em;
-      }
-      .perk-cta {
-        transition: letter-spacing 500ms cubic-bezier(0.16, 1, 0.3, 1);
       }
 
       /* Nav transitions */
@@ -344,7 +356,8 @@
           backdrop-filter 700ms cubic-bezier(0.16, 1, 0.3, 1);
       }
       header.nav-shell .nav-text {
-        transition: color 500ms cubic-bezier(0.16, 1, 0.3, 1);
+        transition: color 500ms cubic-bezier(0.16, 1, 0.3, 1),
+                    opacity 300ms cubic-bezier(0.16, 1, 0.3, 1);
       }
 
       /* Nav scrim — guarantees cream-50 text hits 4.5:1 over any photo.
@@ -404,7 +417,7 @@
           aria-label="Liviana — home"
         >
           <svg
-            class="h-5 w-auto"
+            class="h-[25px] w-auto"
             viewBox="0 0 1096 200"
             fill="currentColor"
             role="img"
@@ -447,7 +460,7 @@
         <div class="hidden md:flex items-center gap-4">
           <a
             href="#"
-            class="nav-text text-xs uppercase tracking-widest text-cream-50"
+            class="nav-text text-xs uppercase tracking-widest text-cream-50 hover:opacity-70"
             data-light="text-cream-50"
             data-dark="text-ink"
             >Login</a
@@ -455,9 +468,11 @@
           <a
             id="nav-cta"
             href="#"
-            class="text-xs uppercase tracking-widest px-5 py-2.5 bg-cream-50 text-ink transition-colors duration-500"
-            >Apply Now</a
+            class="inline-flex items-center gap-2 text-xs uppercase tracking-widest hover:tracking-ultra px-5 py-2.5 bg-cream-50 text-ink transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
           >
+            Apply Now
+            <span aria-hidden>→</span>
+          </a>
         </div>
       </nav>
     </header>
@@ -482,7 +497,7 @@
           <div class="max-w-3xl">
             <h1
               class="reveal font-display font-light leading-[0.95] tracking-tight"
-              style="font-size: clamp(3rem, 8vw, 7.5rem); --reveal-delay: 100ms"
+              style="font-size: clamp(2.5rem, 6.25vw, 6rem); --reveal-delay: 100ms"
             >
               Curated housing<br />for nurses.
               <span class="italic text-warm-200">Liv beyond the shift.</span>
@@ -533,7 +548,7 @@
           <span class="reveal eyebrow text-cream-50/70">Membership Perks</span>
           <h2
             class="reveal mt-4 font-display font-light leading-[1] tracking-tight max-w-4xl"
-            style="font-size: clamp(2.5rem, 5.5vw, 5rem); --reveal-delay: 100ms"
+            style="font-size: clamp(2.125rem, 4.5vw, 4rem); --reveal-delay: 100ms"
           >
             Three pillars of a Liviana stay.
           </h2>
@@ -567,7 +582,7 @@
               </p>
               <span
                 class="perk-cta mt-6 inline-flex items-center gap-3 eyebrow text-cream-50"
-                >Learn more <span aria-hidden>→</span></span
+                >Learn more</span
               >
             </div>
           </a>
@@ -598,7 +613,7 @@
               </p>
               <span
                 class="perk-cta mt-6 inline-flex items-center gap-3 eyebrow text-cream-50"
-                >Learn more <span aria-hidden>→</span></span
+                >Learn more</span
               >
             </div>
           </a>
@@ -629,7 +644,7 @@
               </p>
               <span
                 class="perk-cta mt-6 inline-flex items-center gap-3 eyebrow text-cream-50"
-                >Learn more <span aria-hidden>→</span></span
+                >Learn more</span
               >
             </div>
           </a>
@@ -645,13 +660,13 @@
             <div class="max-w-2xl">
               <h2
                 class="reveal font-display font-light leading-[1] tracking-tight"
-                style="font-size: clamp(2.5rem, 5vw, 4.5rem); --reveal-delay: 100ms"
+                style="font-size: clamp(2rem, 4vw, 3.625rem); --reveal-delay: 100ms"
               >
                 Curated residences,<br />ready when you arrive.
               </h2>
             </div>
             <a href="#" class="reveal btn-ghost-dark" style="--reveal-delay: 200ms"
-              >Browse All <span aria-hidden>→</span></a
+              >Browse All</a
             >
           </div>
 
@@ -669,53 +684,32 @@
                 />
                 <span class="status-badge">Waitlist</span>
               </div>
-              <div class="p-6 lg:p-7 flex flex-col gap-5">
-                <div class="flex items-center gap-2 text-cocoa">
-                  <svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="opacity-80 shrink-0" aria-hidden="true">
-                    <path d="M6 13 C6 13 1.5 8.5 1.5 5 C1.5 2.5 3.5 1 6 1 C8.5 1 10.5 2.5 10.5 5 C10.5 8.5 6 13 6 13 Z"/>
-                    <circle cx="6" cy="5" r="1.6"/>
-                  </svg>
-                  <span class="eyebrow text-cocoa">Nashville, TN</span>
-                </div>
+              <div class="p-6 lg:p-7 flex flex-col gap-4">
                 <h3
                   class="font-display font-light text-3xl lg:text-[2rem] leading-[1.1] tracking-tight"
                 >
                   The Luna
                 </h3>
-                <ul class="flex items-center gap-6 text-ink/80">
-                  <li class="flex items-center gap-2">
-                    <svg width="16" height="13" viewBox="0 0 16 13" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="opacity-70 shrink-0" aria-hidden="true">
-                      <path d="M1 12 L1 4 L15 4 L15 12"/>
-                      <path d="M1 8 L15 8"/>
-                      <rect x="3" y="6" width="3" height="2"/>
-                    </svg>
-                    <span class="text-sm">2 Beds</span>
-                  </li>
-                  <li class="flex items-center gap-2">
-                    <svg width="16" height="13" viewBox="0 0 16 13" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="opacity-70 shrink-0" aria-hidden="true">
-                      <path d="M1 6 L15 6 L15 9 C15 10.5 13.5 11 12 11 L4 11 C2.5 11 1 10.5 1 9 Z"/>
-                      <path d="M3 6 L3 3 C3 1.8 3.8 1 5 1 C6.2 1 7 1.8 7 3"/>
-                    </svg>
-                    <span class="text-sm">2 Baths</span>
-                  </li>
-                </ul>
+                <div class="font-mono text-[10px] uppercase tracking-widest text-ink/65 flex items-center gap-2 flex-wrap">
+                  <span>Nashville, TN</span>
+                  <span class="opacity-50">·</span>
+                  <span>2 Beds</span>
+                  <span class="opacity-50">·</span>
+                  <span>2 Baths</span>
+                </div>
                 <p class="card-description text-sm leading-relaxed text-ink/75">
                   The Luna blends warm textures, soft lighting, and thoughtful
                   design to create a space that feels both elevated and
                   effortless. Part of the Liviana Collection at the heart of
                   Nashville.
                 </p>
-                <div class="h-px w-full bg-ink/20"></div>
-                <div class="flex items-end justify-between gap-4">
-                  <div class="flex flex-col">
-                    <span class="font-mono text-sm text-ink">
-                      $3,900<span class="text-ink/70"> / mo</span>
-                    </span>
-                    <span class="eyebrow text-ink/70">$1,950 per person</span>
+                <div class="flex items-baseline justify-between gap-4 pt-4 border-t border-ink/20">
+                  <div class="font-mono text-sm text-ink">
+                    $3,900<span class="text-ink/60"> / mo</span>
+                    <span class="ml-1 text-[10px] uppercase tracking-widest text-ink/55">· $1,950 pp</span>
                   </div>
-                  <span class="eyebrow text-cocoa inline-flex items-center gap-2 transition-all duration-500 group-hover:tracking-ultra">
+                  <span class="font-mono text-[10px] uppercase tracking-widest text-cocoa inline-flex items-center gap-2 transition-all duration-500 group-hover:tracking-ultra">
                     View Details
-                    <span aria-hidden>→</span>
                   </span>
                 </div>
               </div>
@@ -735,53 +729,32 @@
                 />
                 <span class="status-badge">Available</span>
               </div>
-              <div class="p-6 lg:p-7 flex flex-col gap-5">
-                <div class="flex items-center gap-2 text-cocoa">
-                  <svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="opacity-80 shrink-0" aria-hidden="true">
-                    <path d="M6 13 C6 13 1.5 8.5 1.5 5 C1.5 2.5 3.5 1 6 1 C8.5 1 10.5 2.5 10.5 5 C10.5 8.5 6 13 6 13 Z"/>
-                    <circle cx="6" cy="5" r="1.6"/>
-                  </svg>
-                  <span class="eyebrow text-cocoa">Nashville, TN</span>
-                </div>
+              <div class="p-6 lg:p-7 flex flex-col gap-4">
                 <h3
                   class="font-display font-light text-3xl lg:text-[2rem] leading-[1.1] tracking-tight"
                 >
                   The Olive
                 </h3>
-                <ul class="flex items-center gap-6 text-ink/80">
-                  <li class="flex items-center gap-2">
-                    <svg width="16" height="13" viewBox="0 0 16 13" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="opacity-70 shrink-0" aria-hidden="true">
-                      <path d="M1 12 L1 4 L15 4 L15 12"/>
-                      <path d="M1 8 L15 8"/>
-                      <rect x="3" y="6" width="3" height="2"/>
-                    </svg>
-                    <span class="text-sm">2 Beds</span>
-                  </li>
-                  <li class="flex items-center gap-2">
-                    <svg width="16" height="13" viewBox="0 0 16 13" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="opacity-70 shrink-0" aria-hidden="true">
-                      <path d="M1 6 L15 6 L15 9 C15 10.5 13.5 11 12 11 L4 11 C2.5 11 1 10.5 1 9 Z"/>
-                      <path d="M3 6 L3 3 C3 1.8 3.8 1 5 1 C6.2 1 7 1.8 7 3"/>
-                    </svg>
-                    <span class="text-sm">2 Baths</span>
-                  </li>
-                </ul>
+                <div class="font-mono text-[10px] uppercase tracking-widest text-ink/65 flex items-center gap-2 flex-wrap">
+                  <span>Nashville, TN</span>
+                  <span class="opacity-50">·</span>
+                  <span>2 Beds</span>
+                  <span class="opacity-50">·</span>
+                  <span>2 Baths</span>
+                </div>
                 <p class="card-description text-sm leading-relaxed text-ink/75">
                   Warm tones and relaxed sophistication define the Olive House.
                   This residence was designed to feel welcoming from the moment
                   you arrive — a place to settle in, cook a meal, and rest
                   fully.
                 </p>
-                <div class="h-px w-full bg-ink/20"></div>
-                <div class="flex items-end justify-between gap-4">
-                  <div class="flex flex-col">
-                    <span class="font-mono text-sm text-ink">
-                      $3,900<span class="text-ink/70"> / mo</span>
-                    </span>
-                    <span class="eyebrow text-ink/70">$1,950 per person</span>
+                <div class="flex items-baseline justify-between gap-4 pt-4 border-t border-ink/20">
+                  <div class="font-mono text-sm text-ink">
+                    $3,900<span class="text-ink/60"> / mo</span>
+                    <span class="ml-1 text-[10px] uppercase tracking-widest text-ink/55">· $1,950 pp</span>
                   </div>
-                  <span class="eyebrow text-cocoa inline-flex items-center gap-2 transition-all duration-500 group-hover:tracking-ultra">
+                  <span class="font-mono text-[10px] uppercase tracking-widest text-cocoa inline-flex items-center gap-2 transition-all duration-500 group-hover:tracking-ultra">
                     View Details
-                    <span aria-hidden>→</span>
                   </span>
                 </div>
               </div>
@@ -801,52 +774,31 @@
                 />
                 <span class="status-badge">Waitlist</span>
               </div>
-              <div class="p-6 lg:p-7 flex flex-col gap-5">
-                <div class="flex items-center gap-2 text-cocoa">
-                  <svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="opacity-80 shrink-0" aria-hidden="true">
-                    <path d="M6 13 C6 13 1.5 8.5 1.5 5 C1.5 2.5 3.5 1 6 1 C8.5 1 10.5 2.5 10.5 5 C10.5 8.5 6 13 6 13 Z"/>
-                    <circle cx="6" cy="5" r="1.6"/>
-                  </svg>
-                  <span class="eyebrow text-cocoa">Nashville, TN</span>
-                </div>
+              <div class="p-6 lg:p-7 flex flex-col gap-4">
                 <h3
                   class="font-display font-light text-3xl lg:text-[2rem] leading-[1.1] tracking-tight"
                 >
                   The Sereno
                 </h3>
-                <ul class="flex items-center gap-6 text-ink/80">
-                  <li class="flex items-center gap-2">
-                    <svg width="16" height="13" viewBox="0 0 16 13" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="opacity-70 shrink-0" aria-hidden="true">
-                      <path d="M1 12 L1 4 L15 4 L15 12"/>
-                      <path d="M1 8 L15 8"/>
-                      <rect x="3" y="6" width="3" height="2"/>
-                    </svg>
-                    <span class="text-sm">Studio</span>
-                  </li>
-                  <li class="flex items-center gap-2">
-                    <svg width="16" height="13" viewBox="0 0 16 13" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="opacity-70 shrink-0" aria-hidden="true">
-                      <path d="M1 6 L15 6 L15 9 C15 10.5 13.5 11 12 11 L4 11 C2.5 11 1 10.5 1 9 Z"/>
-                      <path d="M3 6 L3 3 C3 1.8 3.8 1 5 1 C6.2 1 7 1.8 7 3"/>
-                    </svg>
-                    <span class="text-sm">1 Bath</span>
-                  </li>
-                </ul>
+                <div class="font-mono text-[10px] uppercase tracking-widest text-ink/65 flex items-center gap-2 flex-wrap">
+                  <span>Nashville, TN</span>
+                  <span class="opacity-50">·</span>
+                  <span>Studio</span>
+                  <span class="opacity-50">·</span>
+                  <span>1 Bath</span>
+                </div>
                 <p class="card-description text-sm leading-relaxed text-ink/75">
                   The Sereno offers a peaceful escape above the energy of
                   Nashville. Clean lines, neutral textures, and curated
                   furnishings create a calm environment perfect for travel
                   professionals.
                 </p>
-                <div class="h-px w-full bg-ink/20"></div>
-                <div class="flex items-end justify-between gap-4">
-                  <div class="flex flex-col">
-                    <span class="font-mono text-sm text-ink">
-                      $2,900<span class="text-ink/70"> / mo</span>
-                    </span>
+                <div class="flex items-baseline justify-between gap-4 pt-4 border-t border-ink/20">
+                  <div class="font-mono text-sm text-ink">
+                    $2,900<span class="text-ink/60"> / mo</span>
                   </div>
-                  <span class="eyebrow text-cocoa inline-flex items-center gap-2 transition-all duration-500 group-hover:tracking-ultra">
+                  <span class="font-mono text-[10px] uppercase tracking-widest text-cocoa inline-flex items-center gap-2 transition-all duration-500 group-hover:tracking-ultra">
                     View Details
-                    <span aria-hidden>→</span>
                   </span>
                 </div>
               </div>
@@ -871,7 +823,7 @@
           <span class="reveal eyebrow text-cream-50/70">For Property Owners</span>
           <h2
             class="reveal mt-6 font-display font-light leading-[0.95] tracking-tight"
-            style="font-size: clamp(2.5rem, 6vw, 5.5rem); --reveal-delay: 100ms"
+            style="font-size: clamp(2.125rem, 4.75vw, 4.5rem); --reveal-delay: 100ms"
           >
             Request property<br /><span class="italic text-warm-200"
               >consideration.</span
@@ -886,7 +838,7 @@
           </p>
           <div class="reveal mt-12" style="--reveal-delay: 400ms">
             <a href="#" class="btn-primary btn-light"
-              >Learn More <span aria-hidden>→</span></a
+              >Learn More</a
             >
           </div>
         </div>
@@ -896,8 +848,8 @@
       <section class="grid grid-cols-1 lg:grid-cols-12 lg:min-h-screen bg-espresso-700">
         <div class="relative lg:col-span-6 h-[60vh] lg:h-auto">
           <img
-            src="https://images.unsplash.com/photo-1635286771551-9d7241ce7811?auto=format&fit=crop&w=1600&q=80"
-            alt="A Liviana bathroom — sink with mirror"
+            src="https://images.unsplash.com/photo-1682888818704-6dc91e9d7532?auto=format&fit=crop&w=1600&q=80"
+            alt="A Liviana bathroom — green cabinets and marble shower"
             class="w-full h-full object-cover absolute inset-0"
           />
         </div>
@@ -907,7 +859,7 @@
           <span class="reveal eyebrow text-cream-50/70">Why Nurses Love Liviana</span>
           <h2
             class="reveal mt-6 font-display font-light leading-[1.05] tracking-tight max-w-lg"
-            style="font-size: clamp(2.25rem, 4.5vw, 4rem); --reveal-delay: 100ms"
+            style="font-size: clamp(1.875rem, 3.75vw, 3.25rem); --reveal-delay: 100ms"
           >
             Designed around the
             <span class="italic text-warm-200">realities of the shift.</span>
@@ -915,7 +867,7 @@
 
           <ul class="mt-12 lg:mt-16 space-y-10 lg:space-y-12 max-w-xl">
             <li
-              class="reveal grid grid-cols-[auto_1fr] gap-6 lg:gap-8 border-t border-cream-50/15 pt-6"
+              class="reveal grid grid-cols-[auto_1fr] items-baseline gap-6 lg:gap-8 border-t border-cream-50/15 pt-6"
               style="--reveal-delay: 180ms"
             >
               <span class="eyebrow text-cream-50/50">01</span>
@@ -931,7 +883,7 @@
               </div>
             </li>
             <li
-              class="reveal grid grid-cols-[auto_1fr] gap-6 lg:gap-8 border-t border-cream-50/15 pt-6"
+              class="reveal grid grid-cols-[auto_1fr] items-baseline gap-6 lg:gap-8 border-t border-cream-50/15 pt-6"
               style="--reveal-delay: 260ms"
             >
               <span class="eyebrow text-cream-50/50">02</span>
@@ -947,7 +899,7 @@
               </div>
             </li>
             <li
-              class="reveal grid grid-cols-[auto_1fr] gap-6 lg:gap-8 border-t border-cream-50/15 pt-6"
+              class="reveal grid grid-cols-[auto_1fr] items-baseline gap-6 lg:gap-8 border-t border-cream-50/15 pt-6"
               style="--reveal-delay: 340ms"
             >
               <span class="eyebrow text-cream-50/50">03</span>
@@ -962,7 +914,7 @@
               </div>
             </li>
             <li
-              class="reveal grid grid-cols-[auto_1fr] gap-6 lg:gap-8 border-t border-cream-50/15 pt-6"
+              class="reveal grid grid-cols-[auto_1fr] items-baseline gap-6 lg:gap-8 border-t border-cream-50/15 pt-6"
               style="--reveal-delay: 420ms"
             >
               <span class="eyebrow text-cream-50/50">04</span>
@@ -997,7 +949,7 @@
           <span class="reveal eyebrow text-cream-50">Begin Your Membership</span>
           <h2
             class="reveal mt-6 font-display font-light leading-[0.95] tracking-tight"
-            style="font-size: clamp(3rem, 8vw, 8rem); --reveal-delay: 150ms"
+            style="font-size: clamp(2.5rem, 6.25vw, 6.5rem); --reveal-delay: 150ms"
           >
             Liv beyond<br /><span class="italic text-warm-200">the shift.</span>
           </h2>
@@ -1018,7 +970,7 @@
       >
         <div class="md:col-span-5">
           <svg
-            class="h-10 w-auto text-cream-50"
+            class="h-[25px] w-auto text-cream-50"
             viewBox="0 0 1096 200"
             fill="currentColor"
             role="img"
@@ -1063,10 +1015,10 @@
         <div class="md:col-span-3">
           <span class="eyebrow text-cream-50/70">Follow</span>
           <ul class="mt-5 space-y-3 text-sm text-cream-50/80">
-            <li><a href="#" class="hover:text-cream-50 inline-flex items-center gap-3">Facebook <span aria-hidden>→</span></a></li>
-            <li><a href="#" class="hover:text-cream-50 inline-flex items-center gap-3">Instagram <span aria-hidden>→</span></a></li>
-            <li><a href="#" class="hover:text-cream-50 inline-flex items-center gap-3">TikTok <span aria-hidden>→</span></a></li>
-            <li><a href="#" class="hover:text-cream-50 inline-flex items-center gap-3">LinkedIn <span aria-hidden>→</span></a></li>
+            <li><a href="#" class="hover:text-cream-50 inline-flex items-center gap-3">Facebook</a></li>
+            <li><a href="#" class="hover:text-cream-50 inline-flex items-center gap-3">Instagram</a></li>
+            <li><a href="#" class="hover:text-cream-50 inline-flex items-center gap-3">TikTok</a></li>
+            <li><a href="#" class="hover:text-cream-50 inline-flex items-center gap-3">LinkedIn</a></li>
           </ul>
         </div>
       </div>
