@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Liviana — Admin Login</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Lora:wght@400;500;600;700&family=Montserrat:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              /* Brand palette — mirrors liviana-redesign/index.html */
+              brand: {
+                black: "#282828",
+                brown: "#544743",
+                tan: "#8F7C65",
+                sand: "#CEC8BC",
+                gray: "#E8E8E8",
+                cream: "#F3EEEA",
+                white: "#FFFFFF",
+              },
+              espresso: {
+                DEFAULT: "#544743",
+                900: "#282828",
+                800: "#3A2F2C",
+                700: "#544743",
+                600: "#6B5A55",
+              },
+            },
+            fontFamily: {
+              display: ["Lora", "Georgia", "serif"],
+              sans: ['"DM Sans"', "system-ui", "sans-serif"],
+              mono: ['"DM Mono"', "ui-monospace", "monospace"],
+            },
+            letterSpacing: {
+              widest: "0.24em",
+              ultra: "0.32em",
+            },
+            borderRadius: {
+              none: "0",
+              DEFAULT: "0",
+              sm: "0",
+              md: "0",
+              lg: "0",
+              xl: "0",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      html {
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+      body {
+        font-family: "DM Sans", system-ui, sans-serif;
+        /* Warm taupe-cream page field, matching the live admin login */
+        background: #ece7e0;
+        color: #282828;
+        letter-spacing: 0.02em;
+      }
+      button,
+      input,
+      textarea,
+      select {
+        border-radius: 0;
+      }
+      ::selection {
+        background: #544743;
+        color: #faf7f2;
+      }
+
+      /* Login form field — hairline border, transparent fill, sharp edges */
+      .field {
+        width: 100%;
+        background: transparent;
+        border: 1px solid #cabfae;
+        color: #282828;
+        padding: 0.9rem 1rem;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.95rem;
+        letter-spacing: 0.01em;
+        transition: border-color 400ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .field::placeholder {
+        color: #8f7c65;
+        opacity: 1;
+      }
+      .field:focus {
+        outline: none;
+        border-color: #544743;
+      }
+
+      /* Primary submit — brand-consistent brown block, Montserrat uppercase,
+         tracking widens on hover. Mirrors .btn-primary across the site. */
+      .btn-signin {
+        width: 100%;
+        background: #544743;
+        color: #faf7f2;
+        padding: 0.95rem 1rem;
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        border: none;
+        cursor: pointer;
+        transition: background-color 400ms cubic-bezier(0.16, 1, 0.3, 1),
+                    letter-spacing 400ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .btn-signin:hover {
+        background: #282828;
+        letter-spacing: 0.3em;
+      }
+
+      /* Secondary auth — outlined block on the cream field */
+      .btn-google {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.65rem;
+        width: 100%;
+        background: #faf7f2;
+        border: 1px solid #cabfae;
+        color: #282828;
+        padding: 0.85rem 1rem;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.95rem;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        transition: border-color 400ms cubic-bezier(0.16, 1, 0.3, 1),
+          background-color 400ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .btn-google:hover {
+        border-color: #544743;
+        background: #ffffff;
+      }
+
+      /* Phone / Email toggle — hairline tab strip, underline marks the
+         active method. Sharp edges, mono-adjacent uppercase tracking. */
+      .auth-tabs {
+        display: flex;
+        border-bottom: 1px solid #d6cdbf;
+      }
+      .auth-tab {
+        flex: 1;
+        padding: 10px 16px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.78rem;
+        font-weight: 500;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        text-align: center;
+        color: #8f7c65;
+        background: transparent;
+        border: none;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+        cursor: pointer;
+        transition: color 300ms cubic-bezier(0.16, 1, 0.3, 1),
+                    border-color 300ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .auth-tab:hover { color: #544743; }
+      .auth-tab[aria-selected="true"] {
+        color: #282828;
+        border-bottom-color: #544743;
+      }
+
+      .auth-form { display: none; flex-direction: column; gap: 0.75rem; }
+      .auth-form.is-active { display: flex; }
+
+      /* "or" rule between auth methods */
+      .divider {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        color: #8f7c65;
+        font-size: 0.7rem;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+      }
+      .divider::before,
+      .divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #d6cdbf;
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen flex items-center justify-center px-6">
+    <!-- ============================================================
+         ADMIN LOGIN
+         Self-contained recreation of livianaco.com/admin/login.
+         Form posts nowhere yet — wire `action`/`method` (or JS submit
+         handler) to the real auth endpoint when building this out.
+         ============================================================ -->
+    <main class="w-full max-w-[400px] -mt-8">
+      <!-- Logo -->
+      <div class="flex justify-center">
+        <img
+          src="liviana-logo.png"
+          alt="Liviana"
+          class="w-[220px] h-auto select-none"
+          draggable="false"
+        />
+      </div>
+
+      <!-- Heading -->
+      <div class="mt-3 text-center">
+        <p class="text-sm text-brand-tan tracking-wide">
+          Please enter your details to login.
+        </p>
+      </div>
+
+      <!-- Phone / Email method toggle.
+           Tabs control which auth form below is visible. -->
+      <div class="auth-tabs mt-9" role="tablist" aria-label="Login method">
+        <button
+          class="auth-tab"
+          type="button"
+          role="tab"
+          id="tab-phone"
+          aria-selected="true"
+          aria-controls="form-phone"
+          data-target="phone"
+        >
+          Phone
+        </button>
+        <button
+          class="auth-tab"
+          type="button"
+          role="tab"
+          id="tab-email"
+          aria-selected="false"
+          aria-controls="form-email"
+          data-target="email"
+        >
+          Email
+        </button>
+      </div>
+
+      <!-- Phone / send-code form. Wire to the OTP "send code" endpoint. -->
+      <form
+        id="form-phone"
+        class="auth-form is-active mt-6"
+        action="#"
+        method="post"
+        novalidate
+        role="tabpanel"
+        aria-labelledby="tab-phone"
+      >
+        <input
+          class="field"
+          type="tel"
+          name="phone"
+          placeholder="Phone number"
+          autocomplete="tel"
+          inputmode="tel"
+          required
+        />
+        <button class="btn-signin mt-2" type="submit">Send Code</button>
+      </form>
+
+      <!-- Email / password form. Wire to the password sign-in endpoint. -->
+      <form
+        id="form-email"
+        class="auth-form mt-6"
+        action="#"
+        method="post"
+        novalidate
+        role="tabpanel"
+        aria-labelledby="tab-email"
+        hidden
+      >
+        <input
+          class="field"
+          type="email"
+          name="email"
+          placeholder="Email"
+          autocomplete="email"
+          required
+        />
+        <input
+          class="field"
+          type="password"
+          name="password"
+          placeholder="Password"
+          autocomplete="current-password"
+          required
+        />
+        <button class="btn-signin mt-2" type="submit">Sign In</button>
+      </form>
+
+      <!-- Divider -->
+      <div class="divider my-6">or</div>
+
+      <!-- Google auth.
+           Wire this button to the Google OAuth flow when building out. -->
+      <button class="btn-google" type="button">
+        <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+          <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/>
+          <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.583-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
+          <path fill="#FBBC05" d="M3.964 10.706A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.706V4.962H.957A8.997 8.997 0 0 0 0 9c0 1.452.348 2.827.957 4.038l3.007-2.332z"/>
+          <path fill="#EA4335" d="M9 3.583c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.962L3.964 7.294C4.672 5.166 6.656 3.583 9 3.583z"/>
+        </svg>
+        Continue with Google
+      </button>
+
+      <!-- Membership application link.
+           Point href at the membership application route. -->
+      <p class="mt-8 text-center text-sm text-brand-tan tracking-wide">
+        New to Liviana?
+        <a
+          href="apply.html"
+          class="text-brand-brown underline underline-offset-4 decoration-brand-sand hover:decoration-brand-brown transition-colors"
+          >Apply for a membership</a
+        >
+      </p>
+    </main>
+
+    <script>
+      // Phone / Email tab switcher
+      const tabs = document.querySelectorAll(".auth-tab");
+      const forms = {
+        phone: document.getElementById("form-phone"),
+        email: document.getElementById("form-email"),
+      };
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const target = tab.dataset.target;
+          tabs.forEach((t) =>
+            t.setAttribute(
+              "aria-selected",
+              t.dataset.target === target ? "true" : "false"
+            )
+          );
+          Object.entries(forms).forEach(([key, form]) => {
+            const isActive = key === target;
+            form.classList.toggle("is-active", isActive);
+            form.toggleAttribute("hidden", !isActive);
+          });
+          // Focus the first input of the newly-visible form for fast typing
+          forms[target]?.querySelector("input")?.focus();
+        });
+      });
+    </script>
+  </body>
+</html>
