@@ -1,0 +1,936 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LIVIANA | The Luna — Nashville, TN</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                black: "#282828",
+                brown: "#544743",
+                tan: "#8F7C65",
+                sand: "#CEC8BC",
+                gray: "#E8E8E8",
+                cream: "#F3EEEA",
+                white: "#FFFFFF",
+              },
+              cream: {
+                DEFAULT: "#F3EEEA",
+                50: "#FAF7F2",
+                100: "#EFE9DF",
+                200: "#E6DDD0",
+              },
+              espresso: {
+                DEFAULT: "#544743",
+                900: "#282828",
+                800: "#3A2F2C",
+                700: "#544743",
+                600: "#6B5A55",
+              },
+              cocoa: {
+                DEFAULT: "#544743",
+                600: "#544743",
+                400: "#8F7C65",
+                200: "#CEC8BC",
+              },
+              ink: "#282828",
+            },
+            fontFamily: {
+              display: ["Montserrat", "system-ui", "sans-serif"],
+              sans: ['"DM Sans"', "system-ui", "sans-serif"],
+              mono: ["Montserrat", "system-ui", "sans-serif"],
+            },
+            letterSpacing: {
+              widest: "0.24em",
+              ultra: "0.32em",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; scroll-behavior: smooth; }
+      body {
+        font-family: "DM Sans", system-ui, sans-serif;
+        background: #f3eeea;
+        color: #282828;
+        letter-spacing: 0.02em;
+      }
+      ::selection { background: #544743; color: #faf7f2; }
+
+      /* ============= Pill button system (matches browse.html) ============= */
+      .btn-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        padding: 0.85rem 2.25rem;
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        border-radius: 0;
+        cursor: pointer;
+        transition: background-color 400ms cubic-bezier(0.16, 1, 0.3, 1),
+                    color 400ms cubic-bezier(0.16, 1, 0.3, 1),
+                    letter-spacing 400ms cubic-bezier(0.16, 1, 0.3, 1);
+        text-decoration: none;
+      }
+      .btn-pill-primary {
+        background: #8F7C65;
+        color: #faf7f2;
+        border: 1px solid #8F7C65;
+      }
+      .btn-pill-primary:hover {
+        background: #544743;
+        border-color: #544743;
+        letter-spacing: 0.3em;
+      }
+      .btn-pill-block { width: 100%; }
+
+      /* ============= User menu (same component as browse.html) ============= */
+      .user-menu-wrap { position: relative; }
+      .user-menu-trigger {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 6px 14px 6px 16px;
+        height: 32px;
+        background: #faf7f2;
+        border: 1px solid #CEC8BC;
+        border-radius: 0;
+        color: #544743;
+        cursor: pointer;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.9rem;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        text-transform: none;
+        transition: border-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+                    background-color 200ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .user-menu-trigger:hover { border-color: #544743; background: #ffffff; }
+      .user-menu-trigger .chev { transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1); }
+      .user-menu-trigger[aria-expanded="true"] .chev { transform: rotate(180deg); }
+      .user-menu-panel {
+        position: absolute;
+        top: calc(100% + 12px);
+        right: 0;
+        min-width: 268px;
+        background: #ffffff;
+        border: 1px solid #CEC8BC;
+        z-index: 60;
+        padding: 8px 0;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-6px);
+        transition: opacity 200ms cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 250ms cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 28px 60px -36px rgba(40, 32, 28, 0.4);
+        text-transform: none;
+        letter-spacing: normal;
+      }
+      .user-menu-panel.is-open { opacity: 1; pointer-events: auto; transform: translateY(0); }
+      .user-menu-credits {
+        padding: 16px 22px 18px;
+        border-bottom: 1px solid #E6DDD0;
+      }
+      .user-menu-credits .credits-label {
+        font-family: "DM Sans", sans-serif;
+        font-size: 1rem; font-weight: 600; color: #282828;
+      }
+      .user-menu-credits .credits-sub {
+        font-size: 0.82rem; color: #8f7c65; margin-top: 2px;
+      }
+      .user-menu-group { padding: 6px 0; }
+      .user-menu-group + .user-menu-group { border-top: 1px solid #E6DDD0; }
+      .user-menu-link {
+        display: block;
+        padding: 10px 22px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #282828;
+        text-decoration: none;
+        letter-spacing: 0.01em;
+        transition: background-color 150ms ease;
+      }
+      .user-menu-link:hover { background: #f3eeea; }
+
+      /* ============= Property detail page styles ============= */
+
+      /* Breadcrumb-style back link above the hero */
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.85rem;
+        color: #8F7C65;
+        text-decoration: none;
+        margin-bottom: 18px;
+        transition: color 200ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .back-link:hover { color: #544743; }
+      .back-link svg { transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1); }
+      .back-link:hover svg { transform: translateX(-3px); }
+
+      /* Hero photo — wide cinematic crop (21:9 ≈ 507px at 1184px container),
+         shorter than 16:9 so the title and inquiry card surface higher on the
+         page. Sand fallback keeps the layout stable while the remote loads. */
+      .detail-hero-image {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 21 / 9;
+        overflow: hidden;
+        background: #CEC8BC;
+      }
+      .detail-hero-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      /* Overlay control — bottom-right pill, opens the photo lightbox */
+      .hero-expand-btn {
+        position: absolute;
+        bottom: 16px;
+        right: 16px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 16px;
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(40, 40, 40, 0.06);
+        color: #282828;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.85rem;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        cursor: pointer;
+        backdrop-filter: blur(6px);
+        transition: background-color 200ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .hero-expand-btn:hover { background: #ffffff; }
+      .hero-expand-btn svg { color: #544743; }
+
+      /* ============= Photo lightbox =============
+         Fullscreen overlay shown when "View Photos" is clicked. Click outside
+         the image, click the close button, or press Esc to close. */
+      .photo-lightbox {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background: rgba(20, 16, 14, 0.92);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4vh 4vw;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 220ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .photo-lightbox.is-open { opacity: 1; pointer-events: auto; }
+      .photo-lightbox img {
+        max-width: 100%;
+        max-height: 92vh;
+        object-fit: contain;
+        display: block;
+        box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.5);
+      }
+      .lightbox-close {
+        position: absolute;
+        top: 22px;
+        right: 24px;
+        width: 40px;
+        height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        color: #ffffff;
+        cursor: pointer;
+        font-size: 1.3rem;
+        line-height: 1;
+        transition: background-color 200ms ease;
+      }
+      .lightbox-close:hover { background: rgba(255, 255, 255, 0.16); }
+
+      /* Two-column grid: content on left, sticky inquiry card on right.
+         Single column on mobile. */
+      .detail-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+      @media (min-width: 1024px) {
+        .detail-grid {
+          grid-template-columns: minmax(0, 1fr) 360px;
+          column-gap: 4rem;
+        }
+      }
+
+      .detail-price-line {
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #544743;
+      }
+      .detail-price-line .price-mo {
+        font-weight: 500;
+        color: #8f7c65;
+      }
+
+      /* Tan room chips with a bed glyph — "Bedroom 1: Queen" etc. */
+      .room-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #E6DDD0;
+        color: #544743;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.85rem;
+        font-weight: 500;
+        padding: 8px 16px;
+        border-radius: 9999px;
+      }
+      .room-chip svg { color: #8f7c65; }
+
+      /* Inline spec line — bed/bath icons, used in the title block */
+      .detail-specs {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.95rem;
+        color: #544743;
+      }
+      .detail-specs > span { display: inline-flex; align-items: center; gap: 8px; }
+      .detail-specs svg { color: #8f7c65; }
+
+      /* Display headings — uppercase Montserrat */
+      .font-display {
+        text-transform: uppercase;
+      }
+      /* Uniform heading scale */
+      h1 {
+        font-size: 36px !important;
+        letter-spacing: 4px !important;
+        font-weight: 400 !important;
+      }
+      h2 {
+        font-size: 30px !important;
+        letter-spacing: 4px !important;
+        font-weight: 400 !important;
+      }
+      h3 {
+        font-size: 24px !important;
+        letter-spacing: 4px !important;
+        font-weight: 400 !important;
+      }
+      /* Section heading — Montserrat, uppercase, with a hairline rule underneath */
+      .section-heading {
+        font-family: "Montserrat", sans-serif;
+        font-weight: 500;
+        font-size: 1.75rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: #282828;
+      }
+      .section-rule {
+        border: 0;
+        border-top: 1px solid #CEC8BC;
+        margin: 18px 0 22px;
+      }
+
+      /* Body copy — used for description paragraphs */
+      .detail-body p {
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.98rem;
+        line-height: 1.7;
+        color: #6b5a55;
+      }
+      .detail-body p + p { margin-top: 1.1rem; }
+
+      /* 2-column checkmark amenity list */
+      .amenity-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        column-gap: 3rem;
+        row-gap: 14px;
+      }
+      @media (min-width: 640px) {
+        .amenity-grid { grid-template-columns: 1fr 1fr; }
+      }
+      .amenity-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.95rem;
+        color: #282828;
+      }
+      .amenity-item svg { color: #8F7C65; flex-shrink: 0; }
+
+      /* ============= Sticky inquiry card =============
+         The sidebar column stretches to the grid row's full height (driven by
+         the left content column). The card is `position: sticky` inside it so
+         it floats at top:100px while the row is in view. Sticky activates at
+         the lg breakpoint — on mobile the card just flows below the content. */
+      .sidebar-card {
+        background: #ffffff;
+        border: 1px solid #E6DDD0;
+        padding: 28px 28px 26px;
+        box-shadow: 0 28px 64px -40px rgba(40, 32, 28, 0.25);
+      }
+      @media (min-width: 1024px) {
+        .sidebar-card {
+          position: sticky;
+          top: 100px;
+        }
+      }
+      /* Price line at the top of the sidebar card */
+      .sidebar-price {
+        font-family: "DM Sans", sans-serif;
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: #544743;
+        margin-bottom: 18px;
+      }
+      .sidebar-price .price-mo {
+        font-weight: 500;
+        color: #8F7C65;
+        font-size: 0.95rem;
+      }
+
+      /* Reservation form inside the sidebar card */
+      .reserve-field { display: block; margin-bottom: 12px; }
+      .reserve-field label {
+        display: block;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        color: #282828;
+        margin-bottom: 6px;
+      }
+      .reserve-field input[type="date"] {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #CEC8BC;
+        background: #ffffff;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.9rem;
+        color: #282828;
+        border-radius: 0;
+        transition: border-color 400ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .reserve-field input[type="date"]:focus {
+        outline: none;
+        border-color: #544743;
+      }
+
+      /* Secondary "Have Questions?" text link under the primary CTA */
+      .have-questions {
+        display: block;
+        margin-top: 14px;
+        text-align: center;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.85rem;
+        color: #8F7C65;
+        text-decoration: none;
+        transition: color 200ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .have-questions:hover {
+        color: #544743;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+
+      /* ============= Location section (warmer tan field) ============= */
+      .map-section {
+        background: #CEC8BC;
+        color: #282828;
+      }
+      .map-frame {
+        width: 100%;
+        height: 420px;
+        border: 0;
+        display: block;
+        background: #CEC8BC;
+      }
+
+      /* ============= Final CTA band =============
+         Cream-200 — quieter than the brand-sand Location section above, and
+         distinct from the brand-brown footer directly below. Class name kept
+         (`cta-dark`) just to avoid re-wiring references. */
+      .cta-dark {
+        background: #E6DDD0;
+        color: #282828;
+      }
+
+      /* Scroll reveal */
+      @keyframes reveal-in {
+        from { opacity: 0; transform: translateY(28px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .reveal { opacity: 0; transform: translateY(28px); }
+      .reveal.is-visible {
+        animation: reveal-in 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+        animation-delay: var(--reveal-delay, 0ms);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .reveal { opacity: 1 !important; transform: none !important; animation: none !important; }
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen flex flex-col">
+    <!-- Wordmark vector (shared symbol) -->
+    <svg aria-hidden="true" style="position: absolute; width: 0; height: 0; overflow: hidden">
+      <symbol id="liviana-wordmark" viewBox="0 0 1096 200">
+        <path d="M170.458 200H97.2706C66.3857 200 64.3788 162.671 46.2269 148.735C41.3879 144.899 35.3225 143.093 29.6807 143.093C14.74 143.093 2.83204 155.402 2.83204 170.142C2.83204 184.881 14.74 197.19 29.6807 197.19C39.9831 197.19 46.2269 192.351 46.2269 176.408V156.026C57.7335 169.138 63.576 190.947 79.1188 200.022H29.6584C13.3128 200.022 0 186.509 0 170.164C0 153.819 13.3128 140.506 29.6584 140.506C35.9246 140.506 41.5663 142.335 46.2046 145.345V23.6147C46.2046 7.53707 40.0054 2.87657 29.7922 2.83198C29.7476 2.83198 23.4814 2.83198 23.4145 2.83198V0H103.671V2.83198C103.671 2.83198 97.3375 2.83198 97.2929 2.83198C87.5034 2.87657 81.1034 7.35868 80.9027 22.8119V180.845C80.9027 189.72 88.1724 197.19 97.0476 197.19H130.898C153.287 197.19 168.228 187.713 174.695 145.925H177.125C175.72 157.23 175.52 161.869 174.918 163.675V164.277C174.918 166.284 173.713 173.955 170.48 200H170.458Z"/>
+        <path d="M166.511 196.633C174.583 196.633 180.47 195.852 184.172 194.314C187.874 192.775 189.724 190.166 189.724 186.509V13.5132C189.724 9.85617 187.874 7.24718 184.172 5.70855C180.47 4.16992 174.583 3.38945 166.511 3.38945V0H242.24V3.36715C234.167 3.36715 228.28 4.14762 224.579 5.68625C220.877 7.22489 219.026 9.83387 219.026 13.4909V186.464C219.026 190.122 220.877 192.731 224.579 194.269C228.28 195.808 234.167 196.588 242.24 196.588V199.955H166.511V196.588V196.633Z"/>
+        <path d="M364.642 3.36715V0H440.371V3.36715C429.957 3.36715 421.684 5.61936 415.53 10.1238C409.375 14.6282 404.491 21.7639 400.834 31.5085L337.347 199.978H333.98L263.737 13.5132C262.243 9.47709 259.79 6.77891 256.422 5.41866C253.055 4.05842 247.324 3.36715 239.252 3.36715V0H314.981V3.36715C306.44 3.36715 300.263 4.10302 296.472 5.55246C292.681 7.0019 291.522 9.65548 293.016 13.4909L348.609 160.999L397.445 31.5085C400.812 22.4105 399.452 15.4309 393.364 10.6143C387.254 5.77545 377.687 3.36715 364.642 3.36715Z"/>
+        <path d="M437.383 196.633C445.456 196.633 451.343 195.852 455.044 194.314C458.746 192.775 460.597 190.166 460.597 186.509V13.5132C460.597 9.85617 458.746 7.24718 455.044 5.70855C451.343 4.16992 445.456 3.38945 437.383 3.38945V0H513.112V3.36715C505.04 3.36715 499.153 4.14762 495.451 5.68625C491.749 7.22489 489.899 9.83387 489.899 13.4909V186.464C489.899 190.122 491.749 192.731 495.451 194.269C499.153 195.808 505.04 196.588 513.112 196.588V199.955H437.383V196.588V196.633Z"/>
+        <path d="M553.341 167.912C549.862 177.121 551.178 184.19 557.288 189.163C563.376 194.135 572.92 196.633 585.853 196.633V200H510.124V196.633C520.538 196.633 528.811 194.381 534.966 189.876C541.121 185.372 546.027 178.236 549.684 168.491L549.817 167.934H549.684C550.442 166.061 550.999 164.701 551.378 163.853L613.014 0H616.538L686.781 186.487C688.275 190.523 690.728 193.221 694.095 194.581C697.463 195.942 703.194 196.611 711.266 196.611V199.978H635.537V196.611C644.078 196.611 650.21 195.875 653.979 194.425C657.725 192.976 658.862 190.322 657.346 186.464L635.113 127.216C634.556 128.71 633.575 130.539 632.147 132.702C629.137 137.028 624.722 140.172 618.924 142.134C613.103 144.096 607.038 145.345 600.683 145.858C594.327 146.371 588.061 147.062 581.817 147.887C575.573 148.712 569.842 150.764 564.647 153.93C559.429 157.119 555.66 161.757 553.318 167.867L553.341 167.912ZM621.733 91.9166L601.887 38.8449L558.537 153.975C561.904 150.697 566.118 148.222 571.136 146.594C576.153 144.966 581.104 143.873 585.987 143.36C590.871 142.848 595.732 142.201 600.549 141.465C605.388 140.707 609.959 139.213 614.285 136.961C618.589 134.708 622.113 131.475 624.833 127.238C629.048 120.571 628.022 108.797 621.733 91.9166Z"/>
+        <path d="M752.609 0L868.456 175.806V36.8826C868.456 24.5958 866.359 15.9438 862.189 10.9265C858.019 5.90924 851.04 3.38945 841.295 3.38945V0H899.006V3.36715C889.239 3.36715 882.281 5.88694 878.111 10.9042C873.941 15.9215 871.845 24.5735 871.845 36.8603V163.117C871.845 175.404 873.919 184.056 878.111 189.096C882.304 194.135 889.261 196.633 899.006 196.633V200H855.098L738.003 22.2321V163.117C738.003 175.404 740.077 184.056 744.269 189.096C748.439 194.113 755.419 196.633 765.164 196.633V200H707.453V196.633C717.22 196.633 724.178 194.135 728.348 189.096C732.518 184.078 734.614 175.426 734.614 163.117V36.8826C734.614 24.5958 732.518 15.9438 728.348 10.9265C724.178 5.90924 717.198 3.38945 707.453 3.38945V0H752.632H752.609Z"/>
+        <path d="M938.075 167.912C934.596 177.121 935.912 184.19 942.022 189.163C948.110 194.135 957.654 196.633 970.587 196.633V200H894.858V196.633C905.272 196.633 913.545 194.381 919.700 189.876C925.855 185.372 930.760 178.236 934.418 168.491L934.551 167.934H934.418C935.176 166.061 935.733 164.701 936.112 163.853L997.771 0H1001.29L1071.54 186.487C1073.03 190.523 1075.48 193.221 1078.85 194.581C1082.22 195.942 1087.95 196.611 1096.02 196.611V199.978H1020.29V196.611C1028.83 196.611 1034.97 195.875 1038.73 194.425C1042.48 192.976 1043.62 190.322 1042.10 186.464L1019.87 127.216C1019.31 128.710 1018.33 130.539 1016.90 132.702C1013.89 137.028 1009.48 140.172 1003.68 142.134C997.860 144.096 991.794 145.345 985.439 145.858C979.084 146.371 972.817 147.062 966.574 147.887C960.330 148.712 954.599 150.764 949.403 153.930C944.185 157.119 940.416 161.757 938.075 167.867V167.912ZM1006.49 91.9166L986.643 38.8449L943.293 153.975C946.660 150.697 950.875 148.222 955.892 146.594C960.909 144.966 965.860 143.873 970.744 143.360C975.627 142.848 980.488 142.201 985.305 141.465C990.144 140.707 994.716 139.213 999.042 136.961C1003.35 134.708 1006.87 131.475 1009.59 127.238C1013.80 120.571 1012.78 108.797 1006.49 91.9166Z"/>
+      </symbol>
+    </svg>
+
+    <!-- ================= HEADER ================= -->
+    <header class="sticky top-0 z-50 bg-[#f1ece9]/40 backdrop-blur-sm border-b border-[#927c63]/5 text-[#544743]">
+      <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
+        <a href="index.html" class="block" aria-label="Liviana — home">
+          <svg class="h-[40px] w-auto" viewBox="0 0 1096 200" fill="currentColor" role="img" aria-hidden="true">
+            <use href="#liviana-wordmark" />
+          </svg>
+        </a>
+        <div class="hidden md:flex items-center gap-6 text-sm tracking-widest uppercase">
+          <a href="browse.html" class="text-[#544743] hover:opacity-70 transition-opacity">Browse Properties</a>
+
+          <div class="user-menu-wrap">
+            <button
+              id="user-menu-trigger"
+              type="button"
+              class="user-menu-trigger"
+              aria-haspopup="true"
+              aria-expanded="false"
+              aria-controls="user-menu-panel"
+              aria-label="Open account menu for Jamie"
+            >
+              <span>JH</span>
+              <svg class="chev" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3.5 5.5 L7 9 L10.5 5.5" />
+              </svg>
+            </button>
+
+            <div id="user-menu-panel" class="user-menu-panel" role="menu" aria-labelledby="user-menu-trigger">
+              <div class="user-menu-credits">
+                <div class="credits-label">LivCredits: 100</div>
+                <div class="credits-sub">Earn rewards and save</div>
+              </div>
+              <div class="user-menu-group">
+                <a href="#" class="user-menu-link" role="menuitem">Your Messages</a>
+                <a href="#" class="user-menu-link" role="menuitem">Concierge</a>
+                <a href="#" class="user-menu-link" role="menuitem">Account Settings</a>
+              </div>
+              <div class="user-menu-group">
+                <a href="#" class="user-menu-link" role="menuitem">Your Stays</a>
+                <a href="#" class="user-menu-link" role="menuitem">Your Properties</a>
+                <a href="#" class="user-menu-link" role="menuitem">Property Calendar</a>
+                <a href="#" class="user-menu-link" role="menuitem">Reservations</a>
+                <a href="#" class="user-menu-link" role="menuitem">House Swaps</a>
+                <a href="#" class="user-menu-link" role="menuitem">LivCredits</a>
+              </div>
+              <div class="user-menu-group">
+                <a href="#" class="user-menu-link" role="menuitem">Logout</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="flex-1">
+      <!-- ================= DETAIL HERO + CONTENT =================
+           Two-column layout. Left = title + description + amenity lists.
+           Right = sticky waitlist/inquiry card that follows the user as they
+           scroll through the details. -->
+      <section class="bg-cream pt-10 pb-24 lg:pt-12 lg:pb-28">
+        <div class="mx-auto max-w-[1280px] px-6 lg:px-12">
+          <a href="browse.html" class="back-link reveal">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 3 L5 7 L9 11"/>
+            </svg>
+            Back to Browse
+          </a>
+          <!-- Hero photo (21:9), with a "View Photos" control overlay that
+               opens the full-size lightbox below. -->
+          <div class="detail-hero-image reveal">
+            <img
+              src="https://mxyjqeiodayfpaulctgb.supabase.co/storage/v1/render/image/public/property-images/the-luna/1774366177196-kmt1or.jpg"
+              alt="The Luna — interior view"
+              loading="eager"
+            />
+            <button id="hero-expand-btn" type="button" class="hero-expand-btn" aria-label="View larger photo">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 5.5 L2 2 L5.5 2"/>
+                <path d="M12 5.5 L12 2 L8.5 2"/>
+                <path d="M2 8.5 L2 12 L5.5 12"/>
+                <path d="M12 8.5 L12 12 L8.5 12"/>
+              </svg>
+              View Photos
+            </button>
+          </div>
+
+          <div class="detail-grid mt-12 lg:mt-16">
+          <!-- Left column -->
+          <div class="detail-content reveal">
+            <!-- Inline price line -->
+            <p class="detail-price-line">
+              $1,950/per person
+              <span class="price-mo">($3,900/mo)</span>
+            </p>
+
+            <!-- Title -->
+            <h1 class="mt-5 font-display font-medium tracking-tight" style="font-size: clamp(2.25rem, 5vw, 3.5rem); line-height: 1.05;">
+              The Luna
+            </h1>
+
+            <!-- Location row with pin -->
+            <div class="mt-4 flex items-center gap-2 text-sm" style="color:#544743">
+              <svg width="13" height="15" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="color:#8f7c65">
+                <path d="M6 13 C6 13 1.5 8.5 1.5 5 C1.5 2.5 3.5 1 6 1 C8.5 1 10.5 2.5 10.5 5 C10.5 8.5 6 13 6 13 Z"/>
+                <circle cx="6" cy="5" r="1.6"/>
+              </svg>
+              <span>Nashville, TN · Music Row</span>
+            </div>
+
+            <!-- Bed / bath spec row -->
+            <div class="detail-specs mt-3">
+              <span>
+                <svg width="18" height="14" viewBox="0 0 16 13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1.5 11 L1.5 3"/><path d="M14.5 11 L14.5 6.5"/><path d="M1.5 8 L14.5 8"/><path d="M1.5 11 L14.5 11"/><rect x="3.5" y="5" width="4" height="3"/>
+                </svg>
+                2
+              </span>
+              <span>
+                <svg width="18" height="14" viewBox="0 0 16 13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 6 L15 6 L15 9 C15 10.5 13.5 11 12 11 L4 11 C2.5 11 1 10.5 1 9 Z"/>
+                  <path d="M3 6 L3 3 C3 1.8 3.8 1 5 1 C6.2 1 7 1.8 7 3"/>
+                </svg>
+                2 Bath
+              </span>
+            </div>
+
+            <!-- Bedroom configuration chips -->
+            <div class="mt-6 flex items-center gap-3 flex-wrap">
+              <span class="room-chip">
+                <svg width="14" height="11" viewBox="0 0 16 13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1.5 11 L1.5 3"/><path d="M14.5 11 L14.5 6.5"/><path d="M1.5 8 L14.5 8"/><path d="M1.5 11 L14.5 11"/><rect x="3.5" y="5" width="4" height="3"/>
+                </svg>
+                Bedroom 1: Queen
+              </span>
+              <span class="room-chip">
+                <svg width="14" height="11" viewBox="0 0 16 13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1.5 11 L1.5 3"/><path d="M14.5 11 L14.5 6.5"/><path d="M1.5 8 L14.5 8"/><path d="M1.5 11 L14.5 11"/><rect x="3.5" y="5" width="4" height="3"/>
+                </svg>
+                Bedroom 2: Queen
+              </span>
+            </div>
+
+            <!-- About This Home -->
+            <section class="mt-14 detail-body">
+              <h2 class="section-heading">About This Home</h2>
+              <hr class="section-rule" />
+              <p>
+                The Luna blends warm textures, soft lighting, and thoughtful
+                design to create a space that feels both elevated and
+                effortless. Part of the Liviana Collection at Motif on Music
+                Row, this residence is designed for guests who want a refined
+                stay with the comforts of home.
+              </p>
+              <p>
+                Every detail has been carefully considered — from the curated
+                art to the high-thread-count linens. Whether you're winding
+                down after a 12-hour shift or enjoying a quiet morning with
+                coffee, The Luna is your sanctuary in the heart of Nashville.
+              </p>
+            </section>
+
+            <!-- In-Unit Amenities -->
+            <section class="mt-14">
+              <h2 class="section-heading">In-Unit Amenities</h2>
+              <hr class="section-rule" />
+              <div class="amenity-grid">
+                <div class="amenity-item">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5 L6.5 12 L13 4"/></svg>
+                  King-size bed with luxury linens
+                </div>
+                <div class="amenity-item">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5 L6.5 12 L13 4"/></svg>
+                  Fully equipped chef's kitchen
+                </div>
+                <div class="amenity-item">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5 L6.5 12 L13 4"/></svg>
+                  In-unit washer &amp; dryer
+                </div>
+                <div class="amenity-item">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5 L6.5 12 L13 4"/></svg>
+                  High-speed WiFi &amp; smart TV
+                </div>
+                <div class="amenity-item">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5 L6.5 12 L13 4"/></svg>
+                  Dedicated workspace
+                </div>
+                <div class="amenity-item">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5 L6.5 12 L13 4"/></svg>
+                  Blackout curtains for day sleepers
+                </div>
+                <div class="amenity-item">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5 L6.5 12 L13 4"/></svg>
+                  Premium bath products
+                </div>
+                <div class="amenity-item">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5 L6.5 12 L13 4"/></svg>
+                  Climate control
+                </div>
+              </div>
+            </section>
+
+            <!-- Building & Community -->
+            <section class="mt-14">
+              <h2 class="section-heading">Building &amp; Community</h2>
+              <hr class="section-rule" />
+              <div class="amenity-grid">
+                <div class="amenity-item">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5 L6.5 12 L13 4"/></svg>
+                  Rooftop pool &amp; lounge
+                </div>
+                <div class="amenity-item">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5 L6.5 12 L13 4"/></svg>
+                  Modern fitness center
+                </div>
+                <div class="amenity-item">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5 L6.5 12 L13 4"/></svg>
+                  Secure parking garage
+                </div>
+                <div class="amenity-item">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5 L6.5 12 L13 4"/></svg>
+                  Package concierge
+                </div>
+                <div class="amenity-item">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5 L6.5 12 L13 4"/></svg>
+                  Pet-friendly community
+                </div>
+                <div class="amenity-item">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5 L6.5 12 L13 4"/></svg>
+                  Walking distance to hospitals
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- Right column: sticky inquiry card.
+               No .reveal on the sidebar — a transform here would create a new
+               containing block and break the card's position: sticky. -->
+          <aside class="detail-sidebar">
+            <div class="sidebar-card">
+              <p class="sidebar-price">
+                $1,950/per person
+                <span class="price-mo">($3,900/mo)</span>
+              </p>
+              <div class="reserve-field">
+                <label for="reserve-checkin">Check-in</label>
+                <input id="reserve-checkin" type="date" />
+              </div>
+              <div class="reserve-field">
+                <label for="reserve-checkout">Check-out</label>
+                <input id="reserve-checkout" type="date" />
+              </div>
+              <a href="#" class="btn-pill btn-pill-primary btn-pill-block mt-4">Start Reservation →</a>
+              <a href="#" class="have-questions">Have Questions?</a>
+            </div>
+          </aside>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= LOCATION ================= -->
+      <section class="map-section py-20 lg:py-24">
+        <div class="mx-auto max-w-[1280px] px-6 lg:px-12 text-center reveal">
+          <p class="font-mono uppercase text-[11px] tracking-[0.32em] text-cocoa-400">Location</p>
+          <h2 class="mt-2 font-display font-medium text-3xl md:text-4xl tracking-tight">
+            Music Row, Nashville, TN
+          </h2>
+          <p class="mt-3 max-w-[560px] lg:max-w-none mx-auto text-sm md:text-base text-cocoa-600 leading-relaxed lg:whitespace-nowrap">
+            Conveniently located near major hospitals and everything Nashville
+            has to offer.
+          </p>
+        </div>
+        <div class="mx-auto max-w-[1280px] px-6 lg:px-12 mt-10 reveal">
+          <iframe
+            class="map-frame"
+            src="https://maps.google.com/maps?q=Music+Row,+Nashville,+TN&t=&z=14&ie=UTF8&iwloc=&output=embed"
+            loading="lazy"
+            title="Map of Music Row, Nashville, TN"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+      </section>
+
+      <!-- ================= FINAL CTA ================= -->
+      <section class="cta-dark py-24 lg:py-28">
+        <div class="mx-auto max-w-[640px] lg:max-w-none px-6 text-center reveal">
+          <h2 class="font-display font-medium tracking-tight" style="font-size: clamp(1.85rem, 4vw, 2.75rem); line-height: 1.1;">
+            Make The Luna Your Home
+          </h2>
+          <p class="mt-5 text-sm md:text-base text-cocoa-600 leading-relaxed lg:whitespace-nowrap">
+            Ready to experience elevated living designed around your nursing
+            career? Let's get started.
+          </p>
+          <a href="#" class="btn-pill btn-pill-primary mt-8">Start Your Inquiry →</a>
+        </div>
+      </section>
+    </main>
+
+    <!-- ================= PHOTO LIGHTBOX =================
+         Hidden by default; shown when the hero "View Photos" control is
+         clicked. Click backdrop, X, or press Esc to close. -->
+    <div id="photo-lightbox" class="photo-lightbox" role="dialog" aria-modal="true" aria-label="Property photo">
+      <button id="lightbox-close" type="button" class="lightbox-close" aria-label="Close photo viewer">×</button>
+      <img
+        src="https://mxyjqeiodayfpaulctgb.supabase.co/storage/v1/render/image/public/property-images/the-luna/1774366177196-kmt1or.jpg"
+        alt="The Luna — full-size interior view"
+      />
+    </div>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="bg-brand-brown text-cream-50">
+      <div class="mx-auto max-w-[1600px] px-6 lg:px-12 py-16">
+        <div class="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
+          <div>
+            <svg class="h-[34px] w-auto text-cream-50" viewBox="0 0 1096 200" fill="currentColor" role="img" aria-label="Liviana">
+              <use href="#liviana-wordmark" />
+            </svg>
+            <p class="mt-5 text-sm text-cream-50/70">
+              Curated housing for traveling healthcare professionals.
+              <span class="italic" style="color: #c8ac84">LIV beyond the shift.</span>
+            </p>
+          </div>
+
+          <div class="flex items-center gap-5">
+            <a href="#" aria-label="Instagram" class="text-cream-50/70 hover:text-cream-50 transition-colors">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <rect x="2.5" y="2.5" width="19" height="19" rx="5" />
+                <circle cx="12" cy="12" r="4.2" />
+                <circle cx="17.6" cy="6.4" r="1.1" fill="currentColor" stroke="none" />
+              </svg>
+            </a>
+            <a href="#" aria-label="Facebook" class="text-cream-50/70 hover:text-cream-50 transition-colors">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M13.5 21v-7h2.3l.4-2.9h-2.7V9.3c0-.8.2-1.4 1.4-1.4h1.5V5.3c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.1H8.2V14h2.3v7h3z" />
+              </svg>
+            </a>
+            <span class="h-3.5 w-px bg-cream-50/30" aria-hidden="true"></span>
+            <a href="#" class="text-xs uppercase tracking-widest text-cream-50/80 hover:text-cream-50 transition-colors">About</a>
+          </div>
+        </div>
+
+        <hr class="my-10 border-cream-50/15" />
+
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <p class="text-xs text-cream-50/50">© 2026 LIVIANA, LLC. All rights reserved.</p>
+          <div class="flex items-center gap-8 text-xs text-cream-50/75">
+            <a href="#" class="hover:text-cream-50 transition-colors">Privacy Policy</a>
+            <a href="#" class="hover:text-cream-50 transition-colors">Terms of Service</a>
+            <a href="admin-login.html" class="hover:text-cream-50 transition-colors">Admin Login</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Scroll reveal
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              io.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.15 }
+      );
+      document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+
+      // Photo lightbox — open from hero expand button, close via X / backdrop / Esc.
+      const lightbox = document.getElementById("photo-lightbox");
+      const heroBtn = document.getElementById("hero-expand-btn");
+      const lightboxClose = document.getElementById("lightbox-close");
+      const lightboxImg = lightbox?.querySelector("img");
+      function setLightbox(open) {
+        lightbox.classList.toggle("is-open", open);
+        document.body.style.overflow = open ? "hidden" : "";
+      }
+      if (lightbox && heroBtn) {
+        heroBtn.addEventListener("click", () => setLightbox(true));
+        lightboxClose.addEventListener("click", () => setLightbox(false));
+        lightbox.addEventListener("click", (e) => {
+          // Click outside the photo itself closes the lightbox
+          if (e.target !== lightboxImg) setLightbox(false);
+        });
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && lightbox.classList.contains("is-open")) {
+            setLightbox(false);
+          }
+        });
+      }
+
+      // User menu dropdown
+      const userMenuTrigger = document.getElementById("user-menu-trigger");
+      const userMenuPanel = document.getElementById("user-menu-panel");
+      function setUserMenu(open) {
+        userMenuPanel.classList.toggle("is-open", open);
+        userMenuTrigger.setAttribute("aria-expanded", String(open));
+      }
+      if (userMenuTrigger && userMenuPanel) {
+        userMenuTrigger.addEventListener("click", (e) => {
+          e.stopPropagation();
+          setUserMenu(!userMenuPanel.classList.contains("is-open"));
+        });
+        document.addEventListener("click", (e) => {
+          if (!userMenuPanel.contains(e.target) && e.target !== userMenuTrigger) {
+            setUserMenu(false);
+          }
+        });
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && userMenuPanel.classList.contains("is-open")) {
+            setUserMenu(false);
+            userMenuTrigger.focus();
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

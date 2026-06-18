@@ -1,0 +1,1214 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LIVIANA | Properties — Curated Living for Nurses</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                black: "#282828",
+                brown: "#544743",
+                tan: "#8F7C65",
+                sand: "#CEC8BC",
+                gray: "#E8E8E8",
+                cream: "#F3EEEA",
+                white: "#FFFFFF",
+              },
+              cream: {
+                DEFAULT: "#F3EEEA",
+                50: "#FAF7F2",
+                100: "#EFE9DF",
+                200: "#E6DDD0",
+              },
+              espresso: {
+                DEFAULT: "#544743",
+                900: "#282828",
+                800: "#3A2F2C",
+                700: "#544743",
+                600: "#6B5A55",
+              },
+              cocoa: {
+                DEFAULT: "#544743",
+                600: "#544743",
+                400: "#8F7C65",
+                200: "#CEC8BC",
+              },
+              ink: "#282828",
+            },
+            fontFamily: {
+              display: ["Montserrat", "system-ui", "sans-serif"],
+              sans: ['"DM Sans"', "system-ui", "sans-serif"],
+              mono: ["Montserrat", "system-ui", "sans-serif"],
+            },
+            letterSpacing: {
+              widest: "0.24em",
+              ultra: "0.32em",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; scroll-behavior: smooth; }
+      body {
+        font-family: "DM Sans", system-ui, sans-serif;
+        background: #f3eeea;
+        color: #282828;
+        letter-spacing: 0.02em;
+      }
+      ::selection { background: #544743; color: #faf7f2; }
+
+      /* ============= Pill button system =============
+         Used on this page (View Details, List My Home, Notify Me) — rounded
+         pills to mirror livianaco.com/properties. Distinct from index.html's
+         sharp-edge CTAs because this page mirrors the live properties page. */
+      .btn-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        padding: 0.85rem 2.25rem;
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        border-radius: 0;
+        cursor: pointer;
+        transition: background-color 400ms cubic-bezier(0.16, 1, 0.3, 1),
+                    color 400ms cubic-bezier(0.16, 1, 0.3, 1),
+                    letter-spacing 400ms cubic-bezier(0.16, 1, 0.3, 1);
+        text-decoration: none;
+      }
+      .btn-pill-primary {
+        background: #8F7C65;
+        color: #faf7f2;
+        border: 1px solid #8F7C65;
+      }
+      .btn-pill-primary:hover {
+        background: #544743;
+        border-color: #544743;
+        letter-spacing: 0.3em;
+      }
+      .btn-pill-outlined {
+        background: transparent;
+        color: #8F7C65;
+        border: 1px solid #8F7C65;
+      }
+      .btn-pill-outlined:hover {
+        background: #8F7C65;
+        color: #faf7f2;
+        letter-spacing: 0.3em;
+      }
+
+      /* ============= Property card =============
+         Sharp body, rounded image corners, outlined-pill CTA. */
+      .property-card {
+        position: relative;
+        background: #faf7f2;
+        border: 1px solid #E6DDD0;
+        overflow: visible;
+        display: flex;
+        flex-direction: column;
+        transition: box-shadow 700ms cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .property-card:hover {
+        box-shadow: 0 28px 64px -36px rgba(40, 32, 28, 0.45);
+        transform: translateY(-4px);
+      }
+      .property-image {
+        position: relative;
+        aspect-ratio: 4/3;
+        overflow: hidden;
+        background: #CEC8BC;
+      }
+      .property-image img {
+        position: absolute; inset: 0;
+        width: 100%; height: 100%; object-fit: cover;
+        transition: transform 1200ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .property-card:hover .property-image img { transform: scale(1.04); }
+
+      /* Verified stamp — a direct child of .property-card so it can bleed past
+         the card's top-right corner (escapes .property-image's overflow:hidden). */
+      .verified-stamp {
+        position: absolute;
+        top: -14px;
+        right: -14px;
+        width: 64px;
+        height: 64px;
+        object-fit: contain;
+        z-index: 3;
+        user-select: none;
+        pointer-events: none;
+      }
+
+      .property-body { padding: 1.75rem 1.5rem 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+      .property-title-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      /* Lift price slightly so its cap-line meets the title's cap-line, since
+         line-box tops don't align across mixed font sizes. */
+      .property-title-row .property-price { padding-top: 6px; }
+      /* Display headings — uppercase Montserrat */
+      .font-display {
+        text-transform: uppercase;
+      }
+      /* Uniform heading scale */
+      h1 {
+        font-size: 36px !important;
+        letter-spacing: 4px !important;
+        font-weight: 400 !important;
+      }
+      h2 {
+        font-size: 30px !important;
+        letter-spacing: 4px !important;
+        font-weight: 400 !important;
+      }
+      h3 {
+        font-size: 24px !important;
+        letter-spacing: 4px !important;
+        font-weight: 400 !important;
+      }
+      .property-title {
+        font-family: "Montserrat", sans-serif;
+        font-weight: 500;
+        font-size: 1.5rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #282828;
+        min-width: 0;
+        flex: 1 1 auto;
+      }
+      /* Price stacks vertically when there's a per-person line so each row
+         stays nowrap without pinching the title on the left. */
+      .property-price {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        flex: 0 0 auto;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.78rem;
+        color: #8F7C65;
+        text-align: right;
+        white-space: nowrap;
+        line-height: 1.3;
+      }
+      .property-price small {
+        font-size: inherit;
+        color: #8f7c65;
+      }
+      .property-price .price-sub {
+        font-size: inherit;
+        color: #8f7c65;
+        margin-top: 2px;
+      }
+      .property-meta-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.875rem;
+        color: #6b5a55;
+      }
+      .property-specs {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        font-size: 0.875rem;
+        color: #6b5a55;
+      }
+      .property-specs > span { display: inline-flex; align-items: center; gap: 6px; }
+      /* Tighten the gap between the city line and the specs row — the .property-body
+         flex-gap pushes them apart more than reads as a related pair. */
+      .property-meta-row + .property-specs { margin-top: -0.6rem; }
+      .property-desc {
+        font-size: 0.875rem;
+        line-height: 1.55;
+        color: #6b5a55;
+        margin: 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      /* ============= Form (Tell Us Where You're Headed) ============= */
+      .form-card {
+        background: #E6DDD0;
+        padding: 2.5rem 2.25rem;
+      }
+      .field-label {
+        display: block;
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.7rem;
+        font-weight: 500;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #282828;
+        margin-bottom: 0.5rem;
+      }
+      .field-label .req { color: #c44; margin-left: 4px; }
+      .field-input {
+        width: 100%;
+        background: #ffffff;
+        border: 1px solid #CEC8BC;
+        color: #282828;
+        padding: 0.85rem 1rem;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.95rem;
+        letter-spacing: 0.01em;
+        transition: border-color 400ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .field-input::placeholder { color: #8F7C65; }
+      .field-input:focus { outline: none; border-color: #544743; }
+      .field-textarea {
+        min-height: 110px;
+        resize: vertical;
+        font-family: "DM Sans", sans-serif;
+      }
+
+      /* ============= Listing filter bar (above grid) =============
+         Sharp-edged filter pills + a Map|List view toggle. Each pill toggles
+         a dropdown panel below it; behavior is set up in the page script. */
+      .filter-bar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 2.25rem;
+        /* The property cards below establish their own stacking contexts via
+           their post-reveal `transform`, so an unhoisted dropdown paints under
+           them. Lifting the whole bar above the grid keeps the panel on top. */
+        position: relative;
+        z-index: 30;
+      }
+      .filter-bar-item { position: relative; }
+      .filter-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        min-width: 158px;
+        padding: 9px 16px;
+        background: #ffffff;
+        border: 1px solid #CEC8BC;
+        border-radius: 0;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.9rem;
+        color: #282828;
+        cursor: pointer;
+        transition: border-color 200ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .filter-pill:hover { border-color: #544743; }
+      .filter-pill[aria-expanded="true"] { border-color: #544743; }
+      .filter-pill .chev {
+        color: #8f7c65;
+        transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .filter-pill[aria-expanded="true"] .chev { transform: rotate(180deg); }
+
+      /* Dropdown panel — square edges, same hairline border as the trigger pill. */
+      .filter-dropdown {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        background: #ffffff;
+        border: 1px solid #CEC8BC;
+        padding: 18px 20px;
+        z-index: 40;
+        box-shadow: 0 24px 60px -28px rgba(40, 32, 28, 0.35);
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-6px);
+        transition: opacity 200ms cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 250ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .filter-dropdown.is-open {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+      }
+      .filter-section { margin-bottom: 18px; }
+      .filter-section:last-child { margin-bottom: 0; }
+      .filter-section-title {
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        color: #282828;
+        margin-bottom: 10px;
+      }
+
+      /* Custom square-edge checkboxes that match the brand palette */
+      .filter-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 4px 0;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.9rem;
+        color: #282828;
+        cursor: pointer;
+        user-select: none;
+      }
+      .filter-checkbox input[type="checkbox"] {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+        border: 1px solid #CEC8BC;
+        background: #ffffff;
+        cursor: pointer;
+        position: relative;
+        margin: 0;
+        border-radius: 0;
+      }
+      .filter-checkbox input[type="checkbox"]:checked {
+        background: #544743;
+        border-color: #544743;
+      }
+      .filter-checkbox input[type="checkbox"]:checked::after {
+        content: "";
+        position: absolute;
+        left: 4px;
+        top: 0px;
+        width: 5px;
+        height: 10px;
+        border: solid #ffffff;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+      }
+
+      /* State 2-column grid — alphabetical, row-major */
+      .state-grid {
+        display: grid;
+        grid-template-columns: 110px 110px;
+        column-gap: 28px;
+        row-gap: 2px;
+        max-height: 320px;
+        overflow-y: auto;
+        padding-right: 4px;
+      }
+
+      /* Date dropdown */
+      .date-field { display: block; margin-bottom: 14px; }
+      .date-field:last-child { margin-bottom: 0; }
+      .date-field label {
+        display: block;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.85rem;
+        color: #282828;
+        margin-bottom: 6px;
+      }
+      .date-field input[type="date"] {
+        width: 220px;
+        padding: 9px 12px;
+        border: 1px solid #CEC8BC;
+        background: #ffffff;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.9rem;
+        color: #282828;
+        border-radius: 0;
+      }
+      .date-field input[type="date"]:focus { outline: none; border-color: #544743; }
+
+      /* Filters: price range + steppers */
+      .price-range {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .price-input {
+        border: 1px solid #CEC8BC;
+        padding: 8px 12px;
+        background: #ffffff;
+      }
+      .price-input label {
+        display: block;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: #282828;
+        margin-bottom: 2px;
+      }
+      .price-input input {
+        width: 100%;
+        border: none;
+        outline: none;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.88rem;
+        color: #282828;
+        padding: 0;
+        background: transparent;
+      }
+      .price-input input::placeholder { color: #8F7C65; }
+
+      .stepper-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 6px 0;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.9rem;
+        color: #282828;
+      }
+      .stepper-controls {
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .stepper-btn {
+        width: 22px;
+        height: 22px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: none;
+        color: #282828;
+        cursor: pointer;
+        font-family: "DM Sans", sans-serif;
+        font-size: 1.05rem;
+        line-height: 1;
+        padding: 0;
+        border-radius: 0;
+        transition: color 150ms ease;
+      }
+      .stepper-btn:hover { color: #544743; }
+      .stepper-btn:disabled { color: #c8bba8; cursor: default; }
+      .stepper-value {
+        min-width: 16px;
+        text-align: center;
+        font-size: 0.95rem;
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* View toggle (Map | List) — keep slight pill softness so it reads as
+         a paired control distinct from the square filter dropdowns. */
+      .view-toggle {
+        display: inline-flex;
+        margin-left: auto;
+        background: #ffffff;
+        border: 1px solid #CEC8BC;
+        overflow: hidden;
+      }
+      .view-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 18px;
+        background: transparent;
+        border: none;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.9rem;
+        color: #8F7C65;
+        cursor: pointer;
+        border-radius: 0;
+        transition: background-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+                    color 200ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .view-btn + .view-btn { border-left: 1px solid #CEC8BC; }
+      .view-btn:hover:not(.is-active) { background: #faf7f2; }
+      .view-btn.is-active { background: #f3eeea; color: #282828; }
+
+      /* ============= User menu (header dropdown) ============= */
+      .user-menu-wrap { position: relative; }
+      .user-menu-trigger {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 6px 14px 6px 16px;
+        height: 32px;
+        background: #faf7f2;
+        border: 1px solid #CEC8BC;
+        border-radius: 0;
+        color: #544743;
+        cursor: pointer;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.9rem;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        text-transform: none;
+        transition: border-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+                    background-color 200ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .user-menu-trigger:hover { border-color: #544743; background: #ffffff; }
+      .user-menu-trigger .chev {
+        transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .user-menu-trigger[aria-expanded="true"] .chev { transform: rotate(180deg); }
+
+      .user-menu-panel {
+        position: absolute;
+        top: calc(100% + 12px);
+        right: 0;
+        min-width: 268px;
+        background: #ffffff;
+        border: 1px solid #CEC8BC;
+        z-index: 60;
+        padding: 8px 0;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-6px);
+        transition: opacity 200ms cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 250ms cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 28px 60px -36px rgba(40, 32, 28, 0.4);
+        /* Reset typography inherited from the nav container's uppercase + tracking-widest */
+        text-transform: none;
+        letter-spacing: normal;
+      }
+      .user-menu-panel.is-open {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+      }
+      .user-menu-credits {
+        padding: 16px 22px 18px;
+        border-bottom: 1px solid #E6DDD0;
+      }
+      .user-menu-credits .credits-label {
+        font-family: "DM Sans", sans-serif;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #282828;
+      }
+      .user-menu-credits .credits-sub {
+        font-size: 0.82rem;
+        color: #8f7c65;
+        margin-top: 2px;
+      }
+      .user-menu-group { padding: 6px 0; }
+      .user-menu-group + .user-menu-group { border-top: 1px solid #E6DDD0; }
+      .user-menu-link {
+        display: block;
+        padding: 10px 22px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #282828;
+        text-decoration: none;
+        letter-spacing: 0.01em;
+        transition: background-color 150ms ease;
+      }
+      .user-menu-link:hover { background: #f3eeea; }
+
+      /* ============= Hero ============= */
+      .hero-wash {
+        position: absolute;
+        inset: 0;
+        background: rgba(84, 71, 67, 0.7);
+      }
+
+      /* Scroll reveal */
+      @keyframes reveal-in {
+        from { opacity: 0; transform: translateY(28px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .reveal { opacity: 0; transform: translateY(28px); }
+      .reveal.is-visible {
+        animation: reveal-in 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+        animation-delay: var(--reveal-delay, 0ms);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .reveal { opacity: 1 !important; transform: none !important; animation: none !important; }
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen flex flex-col">
+    <!-- Wordmark vector -->
+    <svg aria-hidden="true" style="position: absolute; width: 0; height: 0; overflow: hidden">
+      <symbol id="liviana-wordmark" viewBox="0 0 1096 200">
+        <path d="M170.458 200H97.2706C66.3857 200 64.3788 162.671 46.2269 148.735C41.3879 144.899 35.3225 143.093 29.6807 143.093C14.74 143.093 2.83204 155.402 2.83204 170.142C2.83204 184.881 14.74 197.19 29.6807 197.19C39.9831 197.19 46.2269 192.351 46.2269 176.408V156.026C57.7335 169.138 63.576 190.947 79.1188 200.022H29.6584C13.3128 200.022 0 186.509 0 170.164C0 153.819 13.3128 140.506 29.6584 140.506C35.9246 140.506 41.5663 142.335 46.2046 145.345V23.6147C46.2046 7.53707 40.0054 2.87657 29.7922 2.83198C29.7476 2.83198 23.4814 2.83198 23.4145 2.83198V0H103.671V2.83198C103.671 2.83198 97.3375 2.83198 97.2929 2.83198C87.5034 2.87657 81.1034 7.35868 80.9027 22.8119V180.845C80.9027 189.72 88.1724 197.19 97.0476 197.19H130.898C153.287 197.19 168.228 187.713 174.695 145.925H177.125C175.72 157.23 175.52 161.869 174.918 163.675V164.277C174.918 166.284 173.713 173.955 170.48 200H170.458Z"/>
+        <path d="M166.511 196.633C174.583 196.633 180.47 195.852 184.172 194.314C187.874 192.775 189.724 190.166 189.724 186.509V13.5132C189.724 9.85617 187.874 7.24718 184.172 5.70855C180.47 4.16992 174.583 3.38945 166.511 3.38945V0H242.24V3.36715C234.167 3.36715 228.28 4.14762 224.579 5.68625C220.877 7.22489 219.026 9.83387 219.026 13.4909V186.464C219.026 190.122 220.877 192.731 224.579 194.269C228.28 195.808 234.167 196.588 242.24 196.588V199.955H166.511V196.588V196.633Z"/>
+        <path d="M364.642 3.36715V0H440.371V3.36715C429.957 3.36715 421.684 5.61936 415.53 10.1238C409.375 14.6282 404.491 21.7639 400.834 31.5085L337.347 199.978H333.98L263.737 13.5132C262.243 9.47709 259.79 6.77891 256.422 5.41866C253.055 4.05842 247.324 3.36715 239.252 3.36715V0H314.981V3.36715C306.44 3.36715 300.263 4.10302 296.472 5.55246C292.681 7.0019 291.522 9.65548 293.016 13.4909L348.609 160.999L397.445 31.5085C400.812 22.4105 399.452 15.4309 393.364 10.6143C387.254 5.77545 377.687 3.36715 364.642 3.36715Z"/>
+        <path d="M437.383 196.633C445.456 196.633 451.343 195.852 455.044 194.314C458.746 192.775 460.597 190.166 460.597 186.509V13.5132C460.597 9.85617 458.746 7.24718 455.044 5.70855C451.343 4.16992 445.456 3.38945 437.383 3.38945V0H513.112V3.36715C505.04 3.36715 499.153 4.14762 495.451 5.68625C491.749 7.22489 489.899 9.83387 489.899 13.4909V186.464C489.899 190.122 491.749 192.731 495.451 194.269C499.153 195.808 505.04 196.588 513.112 196.588V199.955H437.383V196.588V196.633Z"/>
+        <path d="M553.341 167.912C549.862 177.121 551.178 184.19 557.288 189.163C563.376 194.135 572.92 196.633 585.853 196.633V200H510.124V196.633C520.538 196.633 528.811 194.381 534.966 189.876C541.121 185.372 546.027 178.236 549.684 168.491L549.817 167.934H549.684C550.442 166.061 550.999 164.701 551.378 163.853L613.014 0H616.538L686.781 186.487C688.275 190.523 690.728 193.221 694.095 194.581C697.463 195.942 703.194 196.611 711.266 196.611V199.978H635.537V196.611C644.078 196.611 650.21 195.875 653.979 194.425C657.725 192.976 658.862 190.322 657.346 186.464L635.113 127.216C634.556 128.71 633.575 130.539 632.147 132.702C629.137 137.028 624.722 140.172 618.924 142.134C613.103 144.096 607.038 145.345 600.683 145.858C594.327 146.371 588.061 147.062 581.817 147.887C575.573 148.712 569.842 150.764 564.647 153.93C559.429 157.119 555.66 161.757 553.318 167.867L553.341 167.912ZM621.733 91.9166L601.887 38.8449L558.537 153.975C561.904 150.697 566.118 148.222 571.136 146.594C576.153 144.966 581.104 143.873 585.987 143.36C590.871 142.848 595.732 142.201 600.549 141.465C605.388 140.707 609.959 139.213 614.285 136.961C618.589 134.708 622.113 131.475 624.833 127.238C629.048 120.571 628.022 108.797 621.733 91.9166Z"/>
+        <path d="M752.609 0L868.456 175.806V36.8826C868.456 24.5958 866.359 15.9438 862.189 10.9265C858.019 5.90924 851.04 3.38945 841.295 3.38945V0H899.006V3.36715C889.239 3.36715 882.281 5.88694 878.111 10.9042C873.941 15.9215 871.845 24.5735 871.845 36.8603V163.117C871.845 175.404 873.919 184.056 878.111 189.096C882.304 194.135 889.261 196.633 899.006 196.633V200H855.098L738.003 22.2321V163.117C738.003 175.404 740.077 184.056 744.269 189.096C748.439 194.113 755.419 196.633 765.164 196.633V200H707.453V196.633C717.22 196.633 724.178 194.135 728.348 189.096C732.518 184.078 734.614 175.426 734.614 163.117V36.8826C734.614 24.5958 732.518 15.9438 728.348 10.9265C724.178 5.90924 717.198 3.38945 707.453 3.38945V0H752.632H752.609Z"/>
+        <path d="M938.075 167.912C934.596 177.121 935.912 184.19 942.022 189.163C948.11 194.135 957.654 196.633 970.587 196.633V200H894.858V196.633C905.272 196.633 913.545 194.381 919.7 189.876C925.855 185.372 930.76 178.236 934.418 168.491L934.551 167.934H934.418C935.176 166.061 935.733 164.701 936.112 163.853L997.771 0H1001.29L1071.54 186.487C1073.03 190.523 1075.48 193.221 1078.85 194.581C1082.22 195.942 1087.95 196.611 1096.02 196.611V199.978H1020.29V196.611C1028.83 196.611 1034.97 195.875 1038.73 194.425C1042.48 192.976 1043.62 190.322 1042.1 186.464L1019.87 127.216C1019.31 128.71 1018.33 130.539 1016.9 132.702C1013.89 137.028 1009.48 140.172 1003.68 142.134C997.86 144.096 991.794 145.345 985.439 145.858C979.084 146.371 972.817 147.062 966.574 147.887C960.33 148.712 954.599 150.764 949.403 153.93C944.185 157.119 940.416 161.757 938.075 167.867V167.912ZM1006.49 91.9166L986.643 38.8449L943.293 153.975C946.66 150.697 950.875 148.222 955.892 146.594C960.909 144.966 965.86 143.873 970.744 143.36C975.627 142.848 980.488 142.201 985.305 141.465C990.144 140.707 994.716 139.213 999.042 136.961C1003.35 134.708 1006.87 131.475 1009.59 127.238C1013.8 120.571 1012.78 108.797 1006.49 91.9166Z"/>
+      </symbol>
+    </svg>
+
+    <!-- ================= HEADER ================= -->
+    <header class="sticky top-0 z-50 bg-[#f1ece9]/40 backdrop-blur-sm border-b border-[#927c63]/5 text-[#544743]">
+      <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
+        <a href="index.html" class="block" aria-label="Liviana — home">
+          <svg class="h-[40px] w-auto" viewBox="0 0 1096 200" fill="currentColor" role="img" aria-hidden="true">
+            <use href="#liviana-wordmark" />
+          </svg>
+        </a>
+        <div class="hidden md:flex items-center gap-6 text-sm tracking-widest uppercase">
+          <a href="browse.html" class="text-[#544743] hover:opacity-70 transition-opacity">Browse Properties</a>
+
+          <!-- User menu — placeholder logged-in state with LivCredits + account links -->
+          <div class="user-menu-wrap">
+            <button
+              id="user-menu-trigger"
+              type="button"
+              class="user-menu-trigger"
+              aria-haspopup="true"
+              aria-expanded="false"
+              aria-controls="user-menu-panel"
+              aria-label="Open account menu for Jamie"
+            >
+              <span>JH</span>
+              <svg class="chev" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3.5 5.5 L7 9 L10.5 5.5" />
+              </svg>
+            </button>
+
+            <div id="user-menu-panel" class="user-menu-panel" role="menu" aria-labelledby="user-menu-trigger">
+              <div class="user-menu-credits">
+                <div class="credits-label">LivCredits: 100</div>
+                <div class="credits-sub">Earn rewards and save</div>
+              </div>
+              <div class="user-menu-group">
+                <a href="#" class="user-menu-link" role="menuitem">Your Messages</a>
+                <a href="#" class="user-menu-link" role="menuitem">Concierge</a>
+                <a href="#" class="user-menu-link" role="menuitem">Account Settings</a>
+              </div>
+              <div class="user-menu-group">
+                <a href="#" class="user-menu-link" role="menuitem">Your Stays</a>
+                <a href="#" class="user-menu-link" role="menuitem">Your Properties</a>
+                <a href="#" class="user-menu-link" role="menuitem">Property Calendar</a>
+                <a href="#" class="user-menu-link" role="menuitem">Reservations</a>
+                <a href="#" class="user-menu-link" role="menuitem">House Swaps</a>
+                <a href="#" class="user-menu-link" role="menuitem">LivCredits</a>
+              </div>
+              <div class="user-menu-group">
+                <a href="#" class="user-menu-link" role="menuitem">Logout</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="flex-1">
+      <!-- ================= HERO ================= -->
+      <section
+        class="relative isolate flex h-[70vh] min-h-[460px] items-center overflow-hidden text-cream-50"
+        style="background-image: url('perk-residences.jpg'); background-size: cover; background-position: center; background-attachment: fixed;"
+      >
+        <div class="hero-wash -z-10"></div>
+
+        <div class="mx-auto w-full max-w-[1280px] px-6 text-center reveal">
+          <p class="font-mono uppercase text-[11px] tracking-[0.32em] text-cream-50/85">Our Properties</p>
+          <h1
+            class="mt-2 font-display font-medium leading-[1.05] tracking-tight"
+            style="font-size: clamp(2rem, 5.5vw, 60px)"
+          >
+            Your Sanctuary Awaits
+          </h1>
+          <p class="mt-3 max-w-[640px] lg:max-w-none mx-auto text-sm sm:text-base md:text-lg leading-relaxed text-cream-50/85 lg:whitespace-nowrap">
+            Fully furnished, thoughtfully curated homes designed around the
+            rhythms of your nursing life.
+          </p>
+        </div>
+      </section>
+
+      <!-- ================= AVAILABLE HOMES INTRO ================= -->
+      <section class="bg-cream text-ink">
+        <div class="mx-auto max-w-[1280px] px-6 lg:px-12 pt-24 pb-12 text-center reveal">
+          <p class="font-mono uppercase text-[11px] tracking-[0.32em] text-cocoa-400">
+            Available Homes
+          </p>
+          <h2 class="mt-2 font-display font-medium text-3xl md:text-5xl tracking-tight">
+            Curated for Comfort
+          </h2>
+          <p class="mt-4 max-w-[640px] lg:max-w-none mx-auto text-sm md:text-base text-cocoa-600 leading-relaxed lg:whitespace-nowrap">
+            Each LIVIANA property is hand-selected and designed with healthcare
+            professionals in mind.
+          </p>
+        </div>
+
+        <!-- ================= PROPERTY GRID ================= -->
+        <div class="mx-auto max-w-[1280px] px-6 lg:px-12 pb-24">
+          <!-- Filter bar — three dropdowns + map/list toggle.
+               Each .filter-bar-item wraps a trigger pill and its dropdown panel.
+               State checkbox list is generated by JS to keep the HTML readable. -->
+          <div class="filter-bar reveal">
+            <!-- STATE -->
+            <div class="filter-bar-item">
+              <button class="filter-pill" type="button" data-filter="state" aria-expanded="false" aria-controls="filter-dd-state">
+                <span>State</span>
+                <svg class="chev" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4.5 L6 7.5 L9 4.5"/></svg>
+              </button>
+              <div class="filter-dropdown" id="filter-dd-state">
+                <div class="filter-section-title">State</div>
+                <div class="state-grid" id="state-grid"><!-- populated by JS --></div>
+              </div>
+            </div>
+
+            <!-- DATES -->
+            <div class="filter-bar-item">
+              <button class="filter-pill" type="button" data-filter="dates" aria-expanded="false" aria-controls="filter-dd-dates">
+                <span>Dates</span>
+                <svg class="chev" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4.5 L6 7.5 L9 4.5"/></svg>
+              </button>
+              <div class="filter-dropdown" id="filter-dd-dates">
+                <div class="filter-section-title">Dates</div>
+                <div class="date-field">
+                  <label for="date-checkin">Check-in</label>
+                  <input id="date-checkin" type="date" />
+                </div>
+                <div class="date-field">
+                  <label for="date-checkout">Check-out</label>
+                  <input id="date-checkout" type="date" />
+                </div>
+              </div>
+            </div>
+
+            <!-- FILTERS -->
+            <div class="filter-bar-item">
+              <button class="filter-pill" type="button" data-filter="filters" aria-expanded="false" aria-controls="filter-dd-filters">
+                <span>Filters</span>
+                <svg class="chev" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4.5 L6 7.5 L9 4.5"/></svg>
+              </button>
+              <div class="filter-dropdown" id="filter-dd-filters" style="width: 320px">
+                <div class="filter-section">
+                  <div class="filter-section-title">Price Range</div>
+                  <div class="price-range">
+                    <div class="price-input">
+                      <label for="price-min">Min</label>
+                      <input id="price-min" type="text" inputmode="numeric" placeholder="$0" />
+                    </div>
+                    <div class="price-input">
+                      <label for="price-max">Max</label>
+                      <input id="price-max" type="text" inputmode="numeric" placeholder="$0" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="filter-section">
+                  <div class="filter-section-title">Liv Verified</div>
+                  <label class="filter-checkbox"><input type="checkbox" /> Verified</label>
+                </div>
+
+                <div class="filter-section">
+                  <div class="filter-section-title">Rooms &amp; spaces</div>
+                  <div class="stepper-row">
+                    <span>Min bedrooms</span>
+                    <span class="stepper-controls" data-stepper="bedrooms">
+                      <button class="stepper-btn" type="button" data-step="-1" aria-label="Decrease bedrooms">−</button>
+                      <span class="stepper-value">0</span>
+                      <button class="stepper-btn" type="button" data-step="1" aria-label="Increase bedrooms">+</button>
+                    </span>
+                  </div>
+                  <div class="stepper-row">
+                    <span>Min beds</span>
+                    <span class="stepper-controls" data-stepper="beds">
+                      <button class="stepper-btn" type="button" data-step="-1" aria-label="Decrease beds">−</button>
+                      <span class="stepper-value">0</span>
+                      <button class="stepper-btn" type="button" data-step="1" aria-label="Increase beds">+</button>
+                    </span>
+                  </div>
+                  <div class="stepper-row">
+                    <span>Min bathrooms</span>
+                    <span class="stepper-controls" data-stepper="bathrooms">
+                      <button class="stepper-btn" type="button" data-step="-1" aria-label="Decrease bathrooms">−</button>
+                      <span class="stepper-value">0</span>
+                      <button class="stepper-btn" type="button" data-step="1" aria-label="Increase bathrooms">+</button>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="filter-section">
+                  <div class="filter-section-title">Amenities</div>
+                  <label class="filter-checkbox"><input type="checkbox" /> Fireplace</label>
+                  <label class="filter-checkbox"><input type="checkbox" /> Hot Tub</label>
+                  <label class="filter-checkbox"><input type="checkbox" /> Pool</label>
+                  <label class="filter-checkbox"><input type="checkbox" /> Pet Friendly</label>
+                </div>
+
+                <div class="filter-section">
+                  <div class="filter-section-title">Property type</div>
+                  <label class="filter-checkbox"><input type="checkbox" /> House</label>
+                  <label class="filter-checkbox"><input type="checkbox" /> Apartment</label>
+                  <label class="filter-checkbox"><input type="checkbox" /> Condo</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="view-toggle" role="group" aria-label="Choose view">
+              <button class="view-btn" type="button" data-view="map" aria-pressed="false">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 2 L1.5 3.2 L1.5 12 L5 10.8 L9 12 L12.5 10.8 L12.5 2 L9 3.2 L5 2 Z"/>
+                  <path d="M5 2 L5 10.8 M9 3.2 L9 12"/>
+                </svg>
+                Map
+              </button>
+              <button class="view-btn is-active" type="button" data-view="list" aria-pressed="true">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="1.5" y="2.5" width="3" height="3"/>
+                  <rect x="1.5" y="8.5" width="3" height="3"/>
+                  <line x1="6.5" y1="4" x2="12.5" y2="4"/>
+                  <line x1="6.5" y1="10" x2="12.5" y2="10"/>
+                </svg>
+                List
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 lg:gap-8">
+
+            <!-- The Luna -->
+            <article class="property-card reveal" style="--reveal-delay: 0ms">
+              <img src="verified-badge.png" alt="Verified residence" class="verified-stamp" />
+              <div class="property-image">
+                <img src="https://mxyjqeiodayfpaulctgb.supabase.co/storage/v1/render/image/public/property-images/the-luna/1774366177196-kmt1or.jpg" alt="The Luna" />
+              </div>
+              <div class="property-body">
+                <div class="property-title-row">
+                  <h3 class="property-title">The Luna</h3>
+                  <p class="property-price">
+                    <span>$1,950<small>/pp</small></span>
+                    <span class="price-sub">$3,900/mo</span>
+                  </p>
+                </div>
+                <div class="property-meta-row">
+                  <svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="text-cocoa-400">
+                    <path d="M6 13 C6 13 1.5 8.5 1.5 5 C1.5 2.5 3.5 1 6 1 C8.5 1 10.5 2.5 10.5 5 C10.5 8.5 6 13 6 13 Z"/><circle cx="6" cy="5" r="1.6"/>
+                  </svg>
+                  Nashville, TN
+                </div>
+                <div class="property-specs">
+                  <span><svg width="16" height="13" viewBox="0 0 16 13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="text-cocoa-400"><path d="M1.5 11 L1.5 3"/><path d="M14.5 11 L14.5 6.5"/><path d="M1.5 8 L14.5 8"/><path d="M1.5 11 L14.5 11"/><rect x="3.5" y="5" width="4" height="3"/></svg> 2</span>
+                  <span><svg width="16" height="13" viewBox="0 0 16 13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="text-cocoa-400"><path d="M1 6 L15 6 L15 9 C15 10.5 13.5 11 12 11 L4 11 C2.5 11 1 10.5 1 9 Z"/><path d="M3 6 L3 3 C3 1.8 3.8 1 5 1 C6.2 1 7 1.8 7 3"/></svg> 2 Bath</span>
+                </div>
+                <p class="property-desc">
+                  The Luna blends warm textures, soft lighting, and thoughtful
+                  design to create a space that feels both elevated and
+                  effortless. Part of the Liviana Collection at the heart of
+                  Nashville.
+                </p>
+                <a href="the-luna.html" class="btn-pill btn-pill-outlined mt-2">View Details →</a>
+              </div>
+            </article>
+
+            <!-- The Olive -->
+            <article class="property-card reveal" style="--reveal-delay: 80ms">
+              <img src="verified-badge.png" alt="Verified residence" class="verified-stamp" />
+              <div class="property-image">
+                <img src="https://mxyjqeiodayfpaulctgb.supabase.co/storage/v1/render/image/public/property-images/the-olive/1774366597521-uw42fa.jpg" alt="The Olive" />
+              </div>
+              <div class="property-body">
+                <div class="property-title-row">
+                  <h3 class="property-title">The Olive</h3>
+                  <p class="property-price">
+                    <span>$1,950<small>/pp</small></span>
+                    <span class="price-sub">$3,900/mo</span>
+                  </p>
+                </div>
+                <div class="property-meta-row">
+                  <svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="text-cocoa-400">
+                    <path d="M6 13 C6 13 1.5 8.5 1.5 5 C1.5 2.5 3.5 1 6 1 C8.5 1 10.5 2.5 10.5 5 C10.5 8.5 6 13 6 13 Z"/><circle cx="6" cy="5" r="1.6"/>
+                  </svg>
+                  Nashville, TN
+                </div>
+                <div class="property-specs">
+                  <span><svg width="16" height="13" viewBox="0 0 16 13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="text-cocoa-400"><path d="M1.5 11 L1.5 3"/><path d="M14.5 11 L14.5 6.5"/><path d="M1.5 8 L14.5 8"/><path d="M1.5 11 L14.5 11"/><rect x="3.5" y="5" width="4" height="3"/></svg> 2</span>
+                  <span><svg width="16" height="13" viewBox="0 0 16 13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="text-cocoa-400"><path d="M1 6 L15 6 L15 9 C15 10.5 13.5 11 12 11 L4 11 C2.5 11 1 10.5 1 9 Z"/><path d="M3 6 L3 3 C3 1.8 3.8 1 5 1 C6.2 1 7 1.8 7 3"/></svg> 2 Bath</span>
+                </div>
+                <p class="property-desc">
+                  Warm tones and relaxed sophistication define the Olive House.
+                  This residence was designed to feel welcoming from the moment
+                  you arrive — a place to settle in, cook a meal, and rest
+                  fully.
+                </p>
+                <a href="the-luna.html" class="btn-pill btn-pill-outlined mt-2">View Details →</a>
+              </div>
+            </article>
+
+            <!-- The Sereno -->
+            <article class="property-card reveal" style="--reveal-delay: 160ms">
+              <img src="verified-badge.png" alt="Verified residence" class="verified-stamp" />
+              <div class="property-image">
+                <img src="https://mxyjqeiodayfpaulctgb.supabase.co/storage/v1/render/image/public/property-images/the-sereno/1774365073112-r0usrh.jpg" alt="The Sereno" />
+              </div>
+              <div class="property-body">
+                <div class="property-title-row">
+                  <h3 class="property-title">The Sereno</h3>
+                  <p class="property-price"><span>$2,900<small>/mo</small></span></p>
+                </div>
+                <div class="property-meta-row">
+                  <svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="text-cocoa-400">
+                    <path d="M6 13 C6 13 1.5 8.5 1.5 5 C1.5 2.5 3.5 1 6 1 C8.5 1 10.5 2.5 10.5 5 C10.5 8.5 6 13 6 13 Z"/><circle cx="6" cy="5" r="1.6"/>
+                  </svg>
+                  Nashville, TN
+                </div>
+                <div class="property-specs">
+                  <span><svg width="16" height="13" viewBox="0 0 16 13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="text-cocoa-400"><path d="M1.5 11 L1.5 3"/><path d="M14.5 11 L14.5 6.5"/><path d="M1.5 8 L14.5 8"/><path d="M1.5 11 L14.5 11"/><rect x="3.5" y="5" width="4" height="3"/></svg> Studio</span>
+                  <span><svg width="16" height="13" viewBox="0 0 16 13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="text-cocoa-400"><path d="M1 6 L15 6 L15 9 C15 10.5 13.5 11 12 11 L4 11 C2.5 11 1 10.5 1 9 Z"/><path d="M3 6 L3 3 C3 1.8 3.8 1 5 1 C6.2 1 7 1.8 7 3"/></svg> 1 Bath</span>
+                </div>
+                <p class="property-desc">
+                  The Sereno offers a peaceful escape above the energy of
+                  Nashville. Clean lines, neutral textures, and curated
+                  furnishings create a calm environment perfect for travel
+                  professionals.
+                </p>
+                <a href="the-luna.html" class="btn-pill btn-pill-outlined mt-2">View Details →</a>
+              </div>
+            </article>
+
+            <!-- The Atelier -->
+            <article class="property-card reveal" style="--reveal-delay: 0ms">
+              <img src="verified-badge.png" alt="Verified residence" class="verified-stamp" />
+              <div class="property-image">
+                <img src="the-atelier.webp" alt="The Atelier" />
+              </div>
+              <div class="property-body">
+                <div class="property-title-row">
+                  <h3 class="property-title">The Atelier</h3>
+                  <p class="property-price"><span>$2,900<small>/mo</small></span></p>
+                </div>
+                <div class="property-meta-row">
+                  <svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="text-cocoa-400">
+                    <path d="M6 13 C6 13 1.5 8.5 1.5 5 C1.5 2.5 3.5 1 6 1 C8.5 1 10.5 2.5 10.5 5 C10.5 8.5 6 13 6 13 Z"/><circle cx="6" cy="5" r="1.6"/>
+                  </svg>
+                  Nashville, TN
+                </div>
+                <div class="property-specs">
+                  <span><svg width="16" height="13" viewBox="0 0 16 13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="text-cocoa-400"><path d="M1.5 11 L1.5 3"/><path d="M14.5 11 L14.5 6.5"/><path d="M1.5 8 L14.5 8"/><path d="M1.5 11 L14.5 11"/><rect x="3.5" y="5" width="4" height="3"/></svg> Studio</span>
+                  <span><svg width="16" height="13" viewBox="0 0 16 13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="text-cocoa-400"><path d="M1 6 L15 6 L15 9 C15 10.5 13.5 11 12 11 L4 11 C2.5 11 1 10.5 1 9 Z"/><path d="M3 6 L3 3 C3 1.8 3.8 1 5 1 C6.2 1 7 1.8 7 3"/></svg> 1 Bath</span>
+                </div>
+                <p class="property-desc">
+                  The Atelier is a sunlit one-bedroom retreat designed for
+                  those who crave simplicity without sacrificing style. Soft
+                  neutrals, natural materials, and intentional design make
+                  this a quiet anchor between shifts.
+                </p>
+                <a href="the-luna.html" class="btn-pill btn-pill-outlined mt-2">View Details →</a>
+              </div>
+            </article>
+
+            <!-- The Lyric -->
+            <article class="property-card reveal" style="--reveal-delay: 80ms">
+              <img src="verified-badge.png" alt="Verified residence" class="verified-stamp" />
+              <div class="property-image">
+                <img src="the-lyric.webp" alt="The Lyric" />
+              </div>
+              <div class="property-body">
+                <div class="property-title-row">
+                  <h3 class="property-title">The Lyric</h3>
+                  <p class="property-price"><span>$2,900<small>/mo</small></span></p>
+                </div>
+                <div class="property-meta-row">
+                  <svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="text-cocoa-400">
+                    <path d="M6 13 C6 13 1.5 8.5 1.5 5 C1.5 2.5 3.5 1 6 1 C8.5 1 10.5 2.5 10.5 5 C10.5 8.5 6 13 6 13 Z"/><circle cx="6" cy="5" r="1.6"/>
+                  </svg>
+                  Nashville, TN
+                </div>
+                <div class="property-specs">
+                  <span><svg width="16" height="13" viewBox="0 0 16 13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="text-cocoa-400"><path d="M1.5 11 L1.5 3"/><path d="M14.5 11 L14.5 6.5"/><path d="M1.5 8 L14.5 8"/><path d="M1.5 11 L14.5 11"/><rect x="3.5" y="5" width="4" height="3"/></svg> Studio</span>
+                  <span><svg width="16" height="13" viewBox="0 0 16 13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="text-cocoa-400"><path d="M1 6 L15 6 L15 9 C15 10.5 13.5 11 12 11 L4 11 C2.5 11 1 10.5 1 9 Z"/><path d="M3 6 L3 3 C3 1.8 3.8 1 5 1 C6.2 1 7 1.8 7 3"/></svg> 1 Bath</span>
+                </div>
+                <p class="property-desc">
+                  Rich textures and moody warmth set The Lyric apart. This
+                  studio residence wraps you in comfort with deep earth
+                  tones, layered lighting, and a kitchen built for gathering
+                  with friends.
+                </p>
+                <a href="the-luna.html" class="btn-pill btn-pill-outlined mt-2">View Details →</a>
+              </div>
+            </article>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= FOR HOMEOWNERS =================
+           Same outer container width (max-w-[1280px] + px-6 lg:px-12) as the
+           property grid above, so the band aligns edge-to-edge with the cards.
+           Square corners to match the rest of the page's sharp-edge system. -->
+      <section class="bg-cream pb-20">
+        <div class="mx-auto max-w-[1280px] px-6 lg:px-12">
+          <div class="reveal bg-brand-sand/55 text-ink px-8 sm:px-12 py-14 text-center">
+            <p class="font-mono uppercase text-[11px] tracking-[0.32em] text-cocoa-600">
+              For Homeowners
+            </p>
+            <h2 class="mt-2 font-display font-medium text-2xl sm:text-3xl md:text-4xl tracking-tight">
+              Interested in Listing Your Property?
+            </h2>
+            <p class="mt-5 max-w-[560px] lg:max-w-none mx-auto text-sm md:text-base text-cocoa-600 leading-relaxed lg:whitespace-nowrap">
+              Join the LIVIANA collection and connect your home with traveling
+              healthcare professionals seeking refined, fully managed stays.
+            </p>
+            <a href="#" class="btn-pill btn-pill-primary mt-8">List My Home →</a>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="bg-brand-brown text-cream-50">
+      <div class="mx-auto max-w-[1600px] px-6 lg:px-12 py-16">
+        <div class="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
+          <div>
+            <svg class="h-[34px] w-auto text-cream-50" viewBox="0 0 1096 200" fill="currentColor" role="img" aria-label="Liviana">
+              <use href="#liviana-wordmark" />
+            </svg>
+            <p class="mt-5 text-sm text-cream-50/70">
+              Curated housing for traveling healthcare professionals.
+              <span class="italic" style="color: #c8ac84">LIV beyond the shift.</span>
+            </p>
+          </div>
+
+          <div class="flex items-center gap-5">
+            <a href="#" aria-label="Instagram" class="text-cream-50/70 hover:text-cream-50 transition-colors">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <rect x="2.5" y="2.5" width="19" height="19" rx="5" />
+                <circle cx="12" cy="12" r="4.2" />
+                <circle cx="17.6" cy="6.4" r="1.1" fill="currentColor" stroke="none" />
+              </svg>
+            </a>
+            <a href="#" aria-label="Facebook" class="text-cream-50/70 hover:text-cream-50 transition-colors">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M13.5 21v-7h2.3l.4-2.9h-2.7V9.3c0-.8.2-1.4 1.4-1.4h1.5V5.3c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.1H8.2V14h2.3v7h3z" />
+              </svg>
+            </a>
+            <span class="h-3.5 w-px bg-cream-50/30" aria-hidden="true"></span>
+            <a href="#" class="text-xs uppercase tracking-widest text-cream-50/80 hover:text-cream-50 transition-colors">About</a>
+          </div>
+        </div>
+
+        <hr class="my-10 border-cream-50/15" />
+
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <p class="text-xs text-cream-50/50">© 2026 LIVIANA, LLC. All rights reserved.</p>
+          <div class="flex items-center gap-8 text-xs text-cream-50/75">
+            <a href="#" class="hover:text-cream-50 transition-colors">Privacy Policy</a>
+            <a href="#" class="hover:text-cream-50 transition-colors">Terms of Service</a>
+            <a href="admin-login.html" class="hover:text-cream-50 transition-colors">Admin Login</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              io.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.15 }
+      );
+      document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+
+      // Populate State dropdown — 50 states, alphabetical, row-major in 2 cols.
+      const STATES = ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"];
+      const stateGrid = document.getElementById("state-grid");
+      if (stateGrid) {
+        stateGrid.innerHTML = STATES.map(
+          (s) => `<label class="filter-checkbox"><input type="checkbox" value="${s}" /> ${s}</label>`
+        ).join("");
+      }
+
+      // Filter dropdowns — click trigger to toggle, close others; click outside or Esc closes all.
+      const filterPills = document.querySelectorAll(".filter-pill[data-filter]");
+      function closeAllFilterDropdowns() {
+        filterPills.forEach((p) => {
+          p.setAttribute("aria-expanded", "false");
+          const dd = document.getElementById(p.getAttribute("aria-controls"));
+          dd?.classList.remove("is-open");
+        });
+      }
+      filterPills.forEach((pill) => {
+        pill.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const dd = document.getElementById(pill.getAttribute("aria-controls"));
+          const wasOpen = pill.getAttribute("aria-expanded") === "true";
+          closeAllFilterDropdowns();
+          if (!wasOpen) {
+            pill.setAttribute("aria-expanded", "true");
+            dd.classList.add("is-open");
+          }
+        });
+      });
+      // Click inside a dropdown shouldn't close it (so checkbox/date interactions stay open).
+      document.querySelectorAll(".filter-dropdown").forEach((dd) => {
+        dd.addEventListener("click", (e) => e.stopPropagation());
+      });
+      document.addEventListener("click", closeAllFilterDropdowns);
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeAllFilterDropdowns();
+      });
+
+      // Steppers (Min bedrooms / beds / bathrooms)
+      document.querySelectorAll(".stepper-controls").forEach((row) => {
+        const valueEl = row.querySelector(".stepper-value");
+        row.querySelectorAll(".stepper-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const step = parseInt(btn.dataset.step, 10);
+            const next = Math.max(0, parseInt(valueEl.textContent, 10) + step);
+            valueEl.textContent = String(next);
+            row.querySelector('[data-step="-1"]').disabled = next === 0;
+          });
+        });
+        // Initial disabled state for the minus button
+        row.querySelector('[data-step="-1"]').disabled = parseInt(valueEl.textContent, 10) === 0;
+      });
+
+      // Map | List view toggle — visual state only (no actual view swap yet).
+      document.querySelectorAll(".view-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".view-btn").forEach((b) => {
+            const active = b === btn;
+            b.classList.toggle("is-active", active);
+            b.setAttribute("aria-pressed", String(active));
+          });
+        });
+      });
+
+      // User menu dropdown — click trigger to toggle, click outside or Esc to close.
+      const userMenuTrigger = document.getElementById("user-menu-trigger");
+      const userMenuPanel = document.getElementById("user-menu-panel");
+      function setUserMenu(open) {
+        userMenuPanel.classList.toggle("is-open", open);
+        userMenuTrigger.setAttribute("aria-expanded", String(open));
+      }
+      if (userMenuTrigger && userMenuPanel) {
+        userMenuTrigger.addEventListener("click", (e) => {
+          e.stopPropagation();
+          setUserMenu(!userMenuPanel.classList.contains("is-open"));
+        });
+        document.addEventListener("click", (e) => {
+          if (!userMenuPanel.contains(e.target) && e.target !== userMenuTrigger) {
+            setUserMenu(false);
+          }
+        });
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && userMenuPanel.classList.contains("is-open")) {
+            setUserMenu(false);
+            userMenuTrigger.focus();
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
