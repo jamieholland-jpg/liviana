@@ -66,8 +66,10 @@
       }
       body {
         font-family: "DM Sans", system-ui, sans-serif;
-        /* Warm taupe-cream page field, matching the live admin login */
-        background: #ece7e0;
+        /* Welcome-hero photo with a soft scrim so the login card stands out */
+        background: linear-gradient(rgba(40, 40, 40, 0.32), rgba(40, 40, 40, 0.32)),
+          url("welcome-hero.png") center / cover no-repeat fixed;
+        background-color: #ece7e0;
         color: #282828;
         letter-spacing: 0.02em;
       }
@@ -80,6 +82,16 @@
       ::selection {
         background: #544743;
         color: #faf7f2;
+      }
+
+      /* Login card — containerized like the apply modal card, floating on the
+         welcome-hero photo. */
+      .login-card {
+        width: 100%;
+        max-width: 440px;
+        background: #faf7f2;
+        padding: 44px 40px 40px;
+        box-shadow: 0 40px 90px -40px rgba(40, 32, 28, 0.6);
       }
 
       /* Login form field — hairline border, transparent fill, sharp edges */
@@ -208,7 +220,7 @@
          Form posts nowhere yet — wire `action`/`method` (or JS submit
          handler) to the real auth endpoint when building this out.
          ============================================================ -->
-    <main class="w-full max-w-[400px] -mt-8">
+    <main class="login-card">
       <!-- Logo -->
       <div class="flex justify-center">
         <img

@@ -325,6 +325,80 @@
       }
       .filter-pill[aria-expanded="true"] .chev { transform: rotate(180deg); }
 
+      /* Search & date fields — replace the old State/Dates dropdown pills */
+      .filter-field {
+        box-sizing: border-box;
+        padding: 9px 16px;
+        background: #ffffff;
+        border: 1px solid #CEC8BC;
+        border-radius: 0;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.9rem;
+        color: #282828;
+        transition: border-color 200ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .filter-field::placeholder { color: #8F7C65; }
+      .filter-field:focus { outline: none; border-color: #544743; }
+      .filter-field-search { min-width: 300px; }
+      .filter-field-dates { min-width: 158px; cursor: pointer; }
+
+      /* ===== Date-range picker ===== */
+      .daterange-panel {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        width: 300px;
+        background: #ffffff;
+        border: 1px solid #cec8bc;
+        padding: 16px;
+        z-index: 40;
+        box-shadow: 0 24px 60px -28px rgba(40, 32, 28, 0.35);
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-6px);
+        transition: opacity 200ms cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 250ms cubic-bezier(0.16, 1, 0.3, 1);
+        font-family: "DM Sans", sans-serif;
+      }
+      .daterange-panel.is-open { opacity: 1; pointer-events: auto; transform: translateY(0); }
+      .dr-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+      .dr-month { font-size: 0.9rem; font-weight: 600; color: #282828; letter-spacing: 0.02em; }
+      .dr-nav {
+        width: 28px; height: 28px;
+        display: inline-flex; align-items: center; justify-content: center;
+        background: none; border: 1px solid #e6ddd0; color: #544743;
+        cursor: pointer; font-size: 16px; line-height: 1;
+        transition: border-color 200ms ease;
+      }
+      .dr-nav:hover { border-color: #544743; }
+      .dr-weekdays, .dr-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
+      .dr-weekdays span {
+        text-align: center; font-size: 0.62rem; letter-spacing: 0.08em;
+        color: #8f7c65; text-transform: uppercase; padding-bottom: 6px;
+      }
+      .dr-day {
+        aspect-ratio: 1; display: inline-flex; align-items: center; justify-content: center;
+        font-size: 0.82rem; color: #282828; cursor: pointer; border: 0; background: none;
+        transition: background-color 150ms ease;
+      }
+      .dr-day.is-empty { cursor: default; }
+      .dr-day:not(.is-empty):not(.is-selected):not(.is-disabled):hover { background: #efe9df; }
+      .dr-day.in-range { background: #efe9df; }
+      .dr-day.is-selected { background: #544743; color: #faf7f2; }
+      .dr-day.is-disabled { color: #cfc7ba; cursor: default; }
+      .dr-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; }
+      .dr-clear {
+        background: none; border: 0; color: #8f7c65; cursor: pointer;
+        font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase;
+      }
+      .dr-clear:hover { color: #544743; }
+      .dr-apply {
+        background: #544743; color: #faf7f2; border: 0; padding: 8px 18px; cursor: pointer;
+        font-family: "Montserrat", sans-serif; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+        transition: background-color 200ms ease;
+      }
+      .dr-apply:hover { background: #282828; }
+
       /* Dropdown panel — square edges, same hairline border as the trigger pill. */
       .filter-dropdown {
         position: absolute;
@@ -535,28 +609,15 @@
       .user-menu-trigger {
         display: inline-flex;
         align-items: center;
-        justify-content: center;
-        gap: 10px;
-        padding: 6px 14px 6px 16px;
-        height: 32px;
-        background: #faf7f2;
-        border: 1px solid #CEC8BC;
-        border-radius: 0;
+        line-height: 0;
+        background: none;
+        border: 0;
+        padding: 0;
         color: #544743;
         cursor: pointer;
-        font-family: "DM Sans", sans-serif;
-        font-size: 0.9rem;
-        font-weight: 500;
-        letter-spacing: 0.01em;
-        text-transform: none;
-        transition: border-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
-                    background-color 200ms cubic-bezier(0.16, 1, 0.3, 1);
+        transition: opacity 200ms cubic-bezier(0.16, 1, 0.3, 1);
       }
-      .user-menu-trigger:hover { border-color: #544743; background: #ffffff; }
-      .user-menu-trigger .chev {
-        transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .user-menu-trigger[aria-expanded="true"] .chev { transform: rotate(180deg); }
+      .user-menu-trigger:hover { opacity: 0.7; }
 
       .user-menu-panel {
         position: absolute;
@@ -632,6 +693,54 @@
       @media (prefers-reduced-motion: reduce) {
         .reveal { opacity: 1 !important; transform: none !important; animation: none !important; }
       }
+
+      /* ===== Mobile navigation drawer (below md) ===== */
+      .mobile-nav-toggle { background: none; border: 0; padding: 0; line-height: 0; color: #544743; cursor: pointer; }
+      .mobile-drawer-backdrop {
+        position: fixed; inset: 0;
+        background: rgba(40, 40, 40, 0.5);
+        backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+        opacity: 0; pointer-events: none;
+        transition: opacity 300ms cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 80;
+      }
+      .mobile-drawer-backdrop.is-open { opacity: 1; pointer-events: auto; }
+      .mobile-drawer {
+        position: fixed; top: 0; right: 0; bottom: 0;
+        width: min(86vw, 340px);
+        background: #f3eeea; z-index: 90;
+        transform: translateX(100%);
+        transition: transform 360ms cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex; flex-direction: column; overflow-y: auto;
+        box-shadow: -24px 0 60px -30px rgba(40, 32, 28, 0.5);
+      }
+      .mobile-drawer.is-open { transform: translateX(0); }
+      .mobile-drawer-head { display: flex; align-items: center; justify-content: flex-end; padding: 18px 24px; border-bottom: 1px solid #e6ddd0; }
+      .mobile-drawer-close { background: none; border: 0; padding: 0; line-height: 0; color: #544743; cursor: pointer; }
+      .mobile-drawer-body { padding: 8px 0 32px; }
+      .mobile-nav-section { padding: 10px 0; }
+      .mobile-nav-section + .mobile-nav-section { border-top: 1px solid #e6ddd0; }
+      .mobile-nav-heading { display: block; font-family: "Montserrat", sans-serif; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: #8f7c65; padding: 6px 24px 8px; }
+      .mobile-nav-link { display: block; padding: 12px 24px; font-family: "DM Sans", sans-serif; font-size: 1rem; font-weight: 500; color: #282828; text-decoration: none; transition: background-color 150ms ease; }
+      .mobile-nav-link:hover { background: #efe9df; }
+
+      /* ===== Filter bar — mobile layout (below md) =====
+         Search full-width, Dates + Filters split 50/50, view toggle full-width. */
+      @media (max-width: 767px) {
+        .filter-bar { gap: 8px; }
+        .filter-bar-item { flex: 1 1 100%; }
+        .filter-bar-item:nth-child(2),
+        .filter-bar-item:nth-child(3) { flex: 1 1 calc(50% - 4px); }
+        .filter-field,
+        .filter-pill { width: 100%; min-width: 0; }
+        .view-toggle { margin-left: 0; flex: 1 1 100%; width: 100%; }
+        .view-btn { flex: 1; justify-content: center; }
+        /* Anchor the Filters dropdown to the right so its 320px panel stays
+           on-screen when its trigger sits in the right-hand half. */
+        .filter-bar-item:nth-child(3) .filter-dropdown { left: auto; right: 0; }
+        #filter-dd-filters { width: min(320px, calc(100vw - 48px)) !important; }
+        #daterange-panel { width: min(300px, calc(100vw - 48px)); }
+      }
     </style>
   </head>
 
@@ -653,14 +762,17 @@
     <header class="sticky top-0 z-50 bg-[#f1ece9]/40 backdrop-blur-sm border-b border-[#927c63]/5 text-[#544743]">
       <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
         <a href="index.html" class="block" aria-label="Liviana — home">
-          <svg class="h-[40px] w-auto" viewBox="0 0 1096 200" fill="currentColor" role="img" aria-hidden="true">
+          <svg class="h-[28px] md:h-[40px] w-auto" viewBox="0 0 1096 200" fill="currentColor" role="img" aria-hidden="true">
             <use href="#liviana-wordmark" />
           </svg>
         </a>
         <div class="hidden md:flex items-center gap-6 text-sm tracking-widest uppercase">
           <a href="browse.html" class="text-[#544743] hover:opacity-70 transition-opacity">Browse Properties</a>
+          <span class="text-[#927c63]/30">|</span>
+          <a href="#" class="text-[#544743] hover:opacity-70 transition-opacity">List My Home</a>
+          <span class="text-[#927c63]/30">|</span>
 
-          <!-- User menu — placeholder logged-in state with LivCredits + account links -->
+          <!-- User menu — hamburger trigger -->
           <div class="user-menu-wrap">
             <button
               id="user-menu-trigger"
@@ -669,20 +781,18 @@
               aria-haspopup="true"
               aria-expanded="false"
               aria-controls="user-menu-panel"
-              aria-label="Open account menu for Jamie"
+              aria-label="Open account menu"
             >
-              <span>JH</span>
-              <svg class="chev" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3.5 5.5 L7 9 L10.5 5.5" />
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
               </svg>
             </button>
 
             <div id="user-menu-panel" class="user-menu-panel" role="menu" aria-labelledby="user-menu-trigger">
-              <div class="user-menu-credits">
-                <div class="credits-label">LivCredits: 100</div>
-                <div class="credits-sub">Earn rewards and save</div>
-              </div>
               <div class="user-menu-group">
+                <a href="#" class="user-menu-link" role="menuitem">About</a>
                 <a href="#" class="user-menu-link" role="menuitem">Your Messages</a>
                 <a href="#" class="user-menu-link" role="menuitem">Concierge</a>
                 <a href="#" class="user-menu-link" role="menuitem">Account Settings</a>
@@ -692,8 +802,6 @@
                 <a href="#" class="user-menu-link" role="menuitem">Your Properties</a>
                 <a href="#" class="user-menu-link" role="menuitem">Property Calendar</a>
                 <a href="#" class="user-menu-link" role="menuitem">Reservations</a>
-                <a href="#" class="user-menu-link" role="menuitem">House Swaps</a>
-                <a href="#" class="user-menu-link" role="menuitem">LivCredits</a>
               </div>
               <div class="user-menu-group">
                 <a href="#" class="user-menu-link" role="menuitem">Logout</a>
@@ -701,8 +809,55 @@
             </div>
           </div>
         </div>
+
+        <!-- Mobile menu trigger (below md) -->
+        <button
+          class="mobile-nav-toggle md:hidden"
+          type="button"
+          aria-label="Open menu"
+          aria-controls="mobile-drawer"
+          aria-expanded="false"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
       </nav>
     </header>
+
+    <!-- ================= MOBILE NAV DRAWER ================= -->
+    <div id="mobile-drawer-backdrop" class="mobile-drawer-backdrop md:hidden" aria-hidden="true"></div>
+    <aside id="mobile-drawer" class="mobile-drawer md:hidden" aria-label="Menu">
+      <div class="mobile-drawer-head">
+        <button id="mobile-drawer-close" type="button" class="mobile-drawer-close" aria-label="Close menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <line x1="5" y1="5" x2="19" y2="19" />
+            <line x1="19" y1="5" x2="5" y2="19" />
+          </svg>
+        </button>
+      </div>
+      <nav class="mobile-drawer-body">
+        <div class="mobile-nav-section">
+          <a href="browse.html" class="mobile-nav-link">Browse Properties</a>
+          <a href="#" class="mobile-nav-link">List My Home</a>
+        </div>
+        <div class="mobile-nav-section">
+          <a href="#" class="mobile-nav-link">About</a>
+          <a href="#" class="mobile-nav-link">Your Messages</a>
+          <a href="#" class="mobile-nav-link">Concierge</a>
+          <a href="#" class="mobile-nav-link">Account Settings</a>
+          <a href="#" class="mobile-nav-link">Your Stays</a>
+          <a href="#" class="mobile-nav-link">Your Properties</a>
+          <a href="#" class="mobile-nav-link">Property Calendar</a>
+          <a href="#" class="mobile-nav-link">Reservations</a>
+        </div>
+        <div class="mobile-nav-section">
+          <a href="#" class="mobile-nav-link">Logout</a>
+        </div>
+      </nav>
+    </aside>
 
     <main class="flex-1">
       <!-- ================= HERO ================= -->
@@ -733,10 +888,10 @@
           <p class="font-mono uppercase text-[11px] tracking-[0.32em] text-cocoa-400">
             Available Homes
           </p>
-          <h2 class="mt-2 font-display font-medium text-3xl md:text-5xl tracking-tight">
+          <h2 class="mt-2 font-display font-medium text-3xl md:text-5xl tracking-tight text-cocoa-600">
             Curated for Comfort
           </h2>
-          <p class="mt-4 max-w-[640px] lg:max-w-none mx-auto text-sm md:text-base text-cocoa-600 leading-relaxed lg:whitespace-nowrap">
+          <p class="mt-4 max-w-[640px] lg:max-w-none mx-auto text-sm md:text-base text-ink leading-relaxed lg:whitespace-nowrap">
             Each LIVIANA property is hand-selected and designed with healthcare
             professionals in mind.
           </p>
@@ -748,33 +903,39 @@
                Each .filter-bar-item wraps a trigger pill and its dropdown panel.
                State checkbox list is generated by JS to keep the HTML readable. -->
           <div class="filter-bar reveal">
-            <!-- STATE -->
+            <!-- LOCATION SEARCH -->
             <div class="filter-bar-item">
-              <button class="filter-pill" type="button" data-filter="state" aria-expanded="false" aria-controls="filter-dd-state">
-                <span>State</span>
-                <svg class="chev" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4.5 L6 7.5 L9 4.5"/></svg>
-              </button>
-              <div class="filter-dropdown" id="filter-dd-state">
-                <div class="filter-section-title">State</div>
-                <div class="state-grid" id="state-grid"><!-- populated by JS --></div>
-              </div>
+              <input
+                type="search"
+                class="filter-field filter-field-search"
+                placeholder="Search city, neighborhood, or zip"
+                aria-label="Search city, neighborhood, or zip"
+              />
             </div>
 
             <!-- DATES -->
             <div class="filter-bar-item">
-              <button class="filter-pill" type="button" data-filter="dates" aria-expanded="false" aria-controls="filter-dd-dates">
-                <span>Dates</span>
-                <svg class="chev" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4.5 L6 7.5 L9 4.5"/></svg>
-              </button>
-              <div class="filter-dropdown" id="filter-dd-dates">
-                <div class="filter-section-title">Dates</div>
-                <div class="date-field">
-                  <label for="date-checkin">Check-in</label>
-                  <input id="date-checkin" type="date" />
+              <input
+                type="text"
+                id="daterange-input"
+                class="filter-field filter-field-dates"
+                placeholder="Add dates"
+                aria-label="Add dates"
+                aria-haspopup="dialog"
+                aria-expanded="false"
+                readonly
+              />
+              <div class="daterange-panel" id="daterange-panel" role="dialog" aria-label="Select date range">
+                <div class="dr-header">
+                  <button class="dr-nav" type="button" data-dir="-1" aria-label="Previous month">‹</button>
+                  <span class="dr-month" id="dr-month"></span>
+                  <button class="dr-nav" type="button" data-dir="1" aria-label="Next month">›</button>
                 </div>
-                <div class="date-field">
-                  <label for="date-checkout">Check-out</label>
-                  <input id="date-checkout" type="date" />
+                <div class="dr-weekdays"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div>
+                <div class="dr-grid" id="dr-grid"></div>
+                <div class="dr-footer">
+                  <button class="dr-clear" id="dr-clear" type="button">Clear</button>
+                  <button class="dr-apply" id="dr-apply" type="button">Apply</button>
                 </div>
               </div>
             </div>
@@ -1089,6 +1250,8 @@
               </svg>
             </a>
             <span class="h-3.5 w-px bg-cream-50/30" aria-hidden="true"></span>
+            <a href="browse.html" class="text-xs uppercase tracking-widest text-cream-50/80 hover:text-cream-50 transition-colors">Browse Properties</a>
+            <a href="#" class="text-xs uppercase tracking-widest text-cream-50/80 hover:text-cream-50 transition-colors">List My Home</a>
             <a href="#" class="text-xs uppercase tracking-widest text-cream-50/80 hover:text-cream-50 transition-colors">About</a>
           </div>
         </div>
@@ -1100,7 +1263,6 @@
           <div class="flex items-center gap-8 text-xs text-cream-50/75">
             <a href="#" class="hover:text-cream-50 transition-colors">Privacy Policy</a>
             <a href="#" class="hover:text-cream-50 transition-colors">Terms of Service</a>
-            <a href="admin-login.html" class="hover:text-cream-50 transition-colors">Admin Login</a>
           </div>
         </div>
       </div>
@@ -1208,6 +1370,107 @@
             userMenuTrigger.focus();
           }
         });
+      }
+
+      // ===== Date-range picker =====
+      (function () {
+        const input = document.getElementById("daterange-input");
+        const panel = document.getElementById("daterange-panel");
+        const monthLabel = document.getElementById("dr-month");
+        const grid = document.getElementById("dr-grid");
+        if (!input || !panel) return;
+
+        const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+        const SHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        const view = new Date(today.getFullYear(), today.getMonth(), 1);
+        let start = null, end = null;
+
+        const same = (a, b) => a && b && a.getTime() === b.getTime();
+        const fmt = (d) => SHORT[d.getMonth()] + " " + d.getDate();
+
+        function setInput() {
+          if (start && end) input.value = fmt(start) + " – " + fmt(end);
+          else if (start) input.value = fmt(start) + " – …";
+          else input.value = "";
+        }
+
+        function render() {
+          monthLabel.textContent = MONTHS[view.getMonth()] + " " + view.getFullYear();
+          const firstDow = new Date(view.getFullYear(), view.getMonth(), 1).getDay();
+          const daysInMonth = new Date(view.getFullYear(), view.getMonth() + 1, 0).getDate();
+          let cells = "";
+          for (let i = 0; i < firstDow; i++) cells += '<span class="dr-day is-empty"></span>';
+          for (let d = 1; d <= daysInMonth; d++) {
+            const date = new Date(view.getFullYear(), view.getMonth(), d);
+            const t = date.getTime();
+            const disabled = t < today.getTime();
+            let cls = "dr-day";
+            if (disabled) cls += " is-disabled";
+            if (same(date, start) || same(date, end)) cls += " is-selected";
+            else if (start && end && t > start.getTime() && t < end.getTime()) cls += " in-range";
+            cells += disabled
+              ? '<span class="' + cls + '">' + d + "</span>"
+              : '<button type="button" class="' + cls + '" data-day="' + t + '">' + d + "</button>";
+          }
+          grid.innerHTML = cells;
+        }
+
+        function open() { panel.classList.add("is-open"); input.setAttribute("aria-expanded", "true"); render(); }
+        function close() { panel.classList.remove("is-open"); input.setAttribute("aria-expanded", "false"); }
+
+        input.addEventListener("click", (e) => {
+          e.stopPropagation();
+          panel.classList.contains("is-open") ? close() : open();
+        });
+        panel.addEventListener("click", (e) => e.stopPropagation());
+
+        grid.addEventListener("click", (e) => {
+          const btn = e.target.closest("[data-day]");
+          if (!btn) return;
+          const date = new Date(Number(btn.dataset.day));
+          if (!start || (start && end)) { start = date; end = null; }
+          else if (date.getTime() < start.getTime()) { start = date; }
+          else { end = date; }
+          setInput();
+          render();
+        });
+
+        document.getElementById("dr-clear").addEventListener("click", () => {
+          start = null; end = null; setInput(); render();
+        });
+        document.getElementById("dr-apply").addEventListener("click", close);
+
+        panel.querySelectorAll(".dr-nav").forEach((nav) => {
+          nav.addEventListener("click", () => {
+            view.setMonth(view.getMonth() + Number(nav.dataset.dir));
+            render();
+          });
+        });
+
+        document.addEventListener("click", (e) => {
+          if (!panel.contains(e.target) && e.target !== input) close();
+        });
+        document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+      })();
+
+      // ===== Mobile navigation drawer =====
+      const mobileToggle = document.querySelector(".mobile-nav-toggle");
+      const mobileDrawer = document.getElementById("mobile-drawer");
+      const mobileBackdrop = document.getElementById("mobile-drawer-backdrop");
+      const mobileClose = document.getElementById("mobile-drawer-close");
+      if (mobileToggle && mobileDrawer && mobileBackdrop) {
+        const setMobileNav = (open) => {
+          mobileDrawer.classList.toggle("is-open", open);
+          mobileBackdrop.classList.toggle("is-open", open);
+          mobileToggle.setAttribute("aria-expanded", String(open));
+          document.body.style.overflow = open ? "hidden" : "";
+        };
+        mobileToggle.addEventListener("click", () => setMobileNav(true));
+        mobileClose && mobileClose.addEventListener("click", () => setMobileNav(false));
+        mobileBackdrop.addEventListener("click", () => setMobileNav(false));
+        mobileDrawer.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setMobileNav(false)));
+        document.addEventListener("keydown", (e) => { if (e.key === "Escape") setMobileNav(false); });
       }
     </script>
   </body>

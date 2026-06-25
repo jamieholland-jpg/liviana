@@ -132,13 +132,16 @@
 
       /* Membership card */
       .tier-card {
+        position: relative;
+        overflow: hidden;
         display: flex;
         flex-direction: column;
-        align-items: center;
-        text-align: center;
-        background: #faf7f2;
+        text-align: left;
+        background: #f3eeea;
+        color: #282828;
         border: 1px solid #e6ddd0;
-        padding: 3rem 2.25rem;
+        min-height: 480px;
+        padding: 2.75rem;
         transition: box-shadow 700ms cubic-bezier(0.16, 1, 0.3, 1),
           transform 700ms cubic-bezier(0.16, 1, 0.3, 1),
           border-color 700ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -147,6 +150,55 @@
         border-color: #cec8bc;
         box-shadow: 0 28px 64px -36px rgba(26, 20, 16, 0.4);
         transform: translateY(-4px);
+      }
+      /* Content sits above the corner watermark illustration */
+      .tier-inner {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+      .tier-eyebrow {
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.72rem;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: #8f7c65;
+      }
+      .tier-icon {
+        width: 64px;
+        height: auto;
+        margin-top: 1.75rem;
+      }
+      /* Title — on-brand uppercase Montserrat (.font-display), pushed to the
+         lower half of the card via margin-top:auto. */
+      .tier-title {
+        margin-top: auto;
+        color: #282828;
+      }
+      .tier-body {
+        margin-top: 1.25rem;
+        max-width: 24rem;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.95rem;
+        line-height: 1.65;
+        color: #6b5a55;
+      }
+      .tier-cta {
+        align-self: flex-start;
+        margin-top: 2rem;
+      }
+      .tier-watermark {
+        position: absolute;
+        right: -28px;
+        bottom: -24px;
+        width: 220px;
+        height: auto;
+        opacity: 0.16;
+        z-index: 0;
+        pointer-events: none;
+        user-select: none;
       }
 
       /* ==========================================================
@@ -367,6 +419,115 @@
           animation: none !important;
         }
       }
+
+      /* Nav "more" menu — dropdown holding Login & About */
+      .nav-menu {
+        position: relative;
+      }
+      .nav-menu-trigger {
+        display: inline-flex;
+        align-items: center;
+        line-height: 0;
+        background: none;
+        border: 0;
+        padding: 0;
+        cursor: pointer;
+      }
+      .nav-menu-panel {
+        position: absolute;
+        top: calc(100% + 16px);
+        right: 0;
+        min-width: 200px;
+        background: #ffffff;
+        border: 1px solid #cec8bc;
+        box-shadow: 0 28px 60px -36px rgba(40, 32, 28, 0.4);
+        padding: 8px 0;
+        z-index: 60;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-6px);
+        transition: opacity 200ms cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 250ms cubic-bezier(0.16, 1, 0.3, 1);
+        /* Reset the nav container's uppercase + tracking-widest */
+        text-transform: none;
+        letter-spacing: normal;
+      }
+      .nav-menu-panel.is-open {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+      }
+      /* Shared with the browse/the-luna user menu */
+      .user-menu-group {
+        padding: 6px 0;
+      }
+      .user-menu-group + .user-menu-group {
+        border-top: 1px solid #e6ddd0;
+      }
+      .user-menu-link {
+        display: block;
+        padding: 10px 22px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #282828;
+        text-decoration: none;
+        letter-spacing: 0.01em;
+        transition: background-color 150ms ease;
+      }
+      .user-menu-link:hover {
+        background: #f3eeea;
+      }
+
+      /* ===== Mobile navigation drawer (below md) ===== */
+      .mobile-nav-toggle {
+        background: none; border: 0; padding: 0; line-height: 0;
+        color: #544743; cursor: pointer;
+      }
+      .mobile-drawer-backdrop {
+        position: fixed; inset: 0;
+        background: rgba(40, 40, 40, 0.5);
+        backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+        opacity: 0; pointer-events: none;
+        transition: opacity 300ms cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 80;
+      }
+      .mobile-drawer-backdrop.is-open { opacity: 1; pointer-events: auto; }
+      .mobile-drawer {
+        position: fixed; top: 0; right: 0; bottom: 0;
+        width: min(86vw, 340px);
+        background: #f3eeea;
+        z-index: 90;
+        transform: translateX(100%);
+        transition: transform 360ms cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex; flex-direction: column; overflow-y: auto;
+        box-shadow: -24px 0 60px -30px rgba(40, 32, 28, 0.5);
+      }
+      .mobile-drawer.is-open { transform: translateX(0); }
+      .mobile-drawer-head {
+        display: flex; align-items: center; justify-content: flex-end;
+        padding: 18px 24px; border-bottom: 1px solid #e6ddd0;
+      }
+      .mobile-drawer-close {
+        background: none; border: 0; padding: 0; line-height: 0;
+        color: #544743; cursor: pointer;
+      }
+      .mobile-drawer-body { padding: 8px 0 32px; }
+      .mobile-nav-section { padding: 10px 0; }
+      .mobile-nav-section + .mobile-nav-section { border-top: 1px solid #e6ddd0; }
+      .mobile-nav-heading {
+        display: block;
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase;
+        color: #8f7c65; padding: 6px 24px 8px;
+      }
+      .mobile-nav-link {
+        display: block; padding: 12px 24px;
+        font-family: "DM Sans", sans-serif; font-size: 1rem; font-weight: 500;
+        color: #282828; text-decoration: none;
+        transition: background-color 150ms ease;
+      }
+      .mobile-nav-link:hover { background: #efe9df; }
     </style>
   </head>
 
@@ -390,113 +551,157 @@
     <header class="sticky top-0 z-50 bg-[#f1ece9]/40 backdrop-blur-sm border-b border-[#927c63]/5 text-[#544743]">
       <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
         <a href="index.html" class="block" aria-label="Liviana — home">
-          <svg class="h-[40px] w-auto" viewBox="0 0 1096 200" fill="currentColor" role="img" aria-hidden="true">
+          <svg class="h-[28px] md:h-[40px] w-auto" viewBox="0 0 1096 200" fill="currentColor" role="img" aria-hidden="true">
             <use href="#liviana-wordmark" />
           </svg>
         </a>
         <div class="hidden md:flex items-center gap-6 text-sm tracking-widest uppercase">
-          <a href="admin-login.html" class="text-[#544743] hover:opacity-70 transition-opacity">Log In</a>
+          <a href="browse.html" class="text-[#544743] hover:opacity-70 transition-opacity">Browse Properties</a>
+          <span class="text-[#927c63]/30">|</span>
+          <a href="#" class="text-[#544743] hover:opacity-70 transition-opacity">List My Home</a>
           <span class="text-[#927c63]/30">|</span>
           <a href="apply.html" class="text-[#544743] hover:opacity-70 transition-opacity">Apply</a>
           <span class="text-[#927c63]/30">|</span>
-          <a href="browse.html" class="text-[#544743] hover:opacity-70 transition-opacity">Browse Properties</a>
+
+          <!-- "More" menu — Login & About -->
+          <div class="nav-menu">
+            <button
+              id="nav-menu-trigger"
+              type="button"
+              class="nav-menu-trigger text-[#544743] hover:opacity-70 transition-opacity"
+              aria-label="Open menu"
+              aria-haspopup="true"
+              aria-expanded="false"
+              aria-controls="nav-menu-panel"
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+            </button>
+            <div id="nav-menu-panel" class="nav-menu-panel" role="menu" aria-label="More">
+              <div class="user-menu-group">
+                <a href="admin-login.html" class="user-menu-link" role="menuitem">Login</a>
+                <a href="#" class="user-menu-link" role="menuitem">About</a>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <!-- Mobile menu trigger (below md) -->
+        <button
+          class="mobile-nav-toggle md:hidden"
+          type="button"
+          aria-label="Open menu"
+          aria-controls="mobile-drawer"
+          aria-expanded="false"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
       </nav>
     </header>
 
+    <!-- ================= MOBILE NAV DRAWER ================= -->
+    <div id="mobile-drawer-backdrop" class="mobile-drawer-backdrop md:hidden" aria-hidden="true"></div>
+    <aside id="mobile-drawer" class="mobile-drawer md:hidden" aria-label="Menu">
+      <div class="mobile-drawer-head">
+        <button id="mobile-drawer-close" type="button" class="mobile-drawer-close" aria-label="Close menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <line x1="5" y1="5" x2="19" y2="19" />
+            <line x1="19" y1="5" x2="5" y2="19" />
+          </svg>
+        </button>
+      </div>
+      <nav class="mobile-drawer-body">
+        <div class="mobile-nav-section">
+          <a href="browse.html" class="mobile-nav-link">Browse Properties</a>
+          <a href="#" class="mobile-nav-link">List My Home</a>
+          <a href="apply.html" class="mobile-nav-link">Apply</a>
+        </div>
+        <div class="mobile-nav-section">
+          <a href="admin-login.html" class="mobile-nav-link">Login</a>
+          <a href="#" class="mobile-nav-link">About</a>
+        </div>
+      </nav>
+    </aside>
+
     <main class="flex-1">
-      <!-- ================= HERO ================= -->
+      <!-- ================= HERO + MEMBERSHIP =================
+           Hero copy and the membership cards share one photo-backed section;
+           the cream tier-cards float over the scrimmed background image. -->
       <section
-        class="relative isolate flex h-[70vh] min-h-[460px] items-center overflow-hidden text-cream-50"
+        id="apply"
+        class="relative isolate overflow-hidden text-cream-50"
         style="background-image: url('hero-home.jpg'); background-size: cover; background-position: center; background-attachment: fixed;"
       >
-        <!-- Hazy brown wash — keeps the photo warm and present while
-             still giving cream headline copy enough contrast (≥3:1 large). -->
+        <!-- Hazy brown wash — keeps the photo warm while giving cream copy
+             enough contrast and letting the cards read as floating cards. -->
         <div class="absolute inset-0 -z-10 bg-espresso/70"></div>
 
-        <div class="mx-auto w-full max-w-[1280px] px-6 text-center reveal">
-          <h1
-            class="font-display font-medium leading-[1.05] tracking-tight whitespace-nowrap"
-            style="font-size: clamp(2rem, 5.5vw, 60px)"
-          >
-            Curated Living Where You Belong
-          </h1>
-          <p class="mt-3 text-sm sm:text-base md:text-lg leading-relaxed text-cream-50/85 whitespace-normal sm:whitespace-nowrap">
-            Join our community of nurses who have discovered a better way to live.
-          </p>
+        <!-- Hero band — same 70vh centered spacing as the original hero -->
+        <div class="flex min-h-[70vh] items-center justify-center px-6 lg:px-12">
+          <div class="w-full max-w-[1280px] text-center reveal">
+            <h1
+              class="font-display font-medium leading-[1.05] tracking-tight md:whitespace-nowrap"
+              style="font-size: clamp(2rem, 5.5vw, 60px)"
+            >
+              Curated Living Where You Belong
+            </h1>
+            <p class="mt-3 text-sm sm:text-base md:text-lg leading-relaxed text-cream-50/85 whitespace-normal sm:whitespace-nowrap">
+              Join our community of nurses who have discovered a better way to live.
+            </p>
+          </div>
         </div>
-      </section>
 
-      <!-- ================= CHOOSE YOUR MEMBERSHIP ================= -->
-      <section id="apply" class="bg-cream-50 text-ink">
-        <div class="mx-auto max-w-[1280px] px-6 lg:px-12 py-24 md:py-28">
+        <!-- Membership cards — full-width translucent brown band defines the
+             section while the fixed photo still reads through it. -->
+        <div class="bg-brand-brown/55">
+          <div class="mx-auto w-full max-w-[1280px] px-6 lg:px-12 py-16 md:py-24">
           <div class="text-center reveal">
             <h2 class="font-display font-light text-3xl md:text-5xl tracking-tight">
               Choose Your Membership
             </h2>
           </div>
 
-          <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+          <div class="mt-12 grid grid-cols-1 md:grid-cols-2 items-start gap-6 lg:gap-10 max-w-[920px] mx-auto">
             <!-- Clinician Guest -->
             <article class="tier-card reveal" style="--reveal-delay: 0ms">
-              <div class="text-cocoa-600" aria-hidden="true">
-                <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M2 4v16" />
-                  <path d="M2 8h18a2 2 0 0 1 2 2v10" />
-                  <path d="M2 17h20" />
-                  <path d="M6 8v9" />
-                </svg>
+              <img class="tier-watermark" src="bed.png" alt="" aria-hidden="true" />
+              <div class="tier-inner">
+                <span class="tier-eyebrow">01 / Stay</span>
+                <img class="tier-icon" src="bed.png" alt="" aria-hidden="true" />
+                <h3 class="tier-title font-display">Clinician Guest</h3>
+                <p class="tier-body">
+                  Browse and book curated, fully furnished residences designed
+                  for traveling healthcare professionals. Verified hosts,
+                  flexible stays, refined living.
+                </p>
+                <a href="#" class="btn-primary tier-cta">Apply to Stay</a>
               </div>
-              <h3 class="mt-7 font-display text-2xl tracking-wide">Clinician Guest</h3>
-              <p class="mt-4 text-sm leading-relaxed text-cocoa-600">
-                Browse and book curated properties designed for traveling nurses
-                and healthcare professionals. Access verified hosts and flexible
-                stays.
-              </p>
-              <a href="#" class="btn-primary mt-8">Apply</a>
             </article>
 
             <!-- Property Host -->
-            <article class="tier-card reveal" style="--reveal-delay: 120ms">
-              <div class="text-cocoa-600" aria-hidden="true">
-                <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="7.5" cy="15.5" r="5.5" />
-                  <path d="m21 2-9.6 9.6" />
-                  <path d="m15.5 7.5 3 3L22 7l-3-3" />
-                </svg>
+            <article class="tier-card reveal md:mt-16" style="--reveal-delay: 120ms">
+              <img class="tier-watermark" src="key.png" alt="" aria-hidden="true" />
+              <div class="tier-inner">
+                <span class="tier-eyebrow">02 / Host</span>
+                <img class="tier-icon" src="key.png" alt="" aria-hidden="true" />
+                <h3 class="tier-title font-display">Property Host</h3>
+                <p class="tier-body">
+                  List your home within a private network of vetted traveling
+                  healthcare professionals. Concierge oversight, optimized
+                  occupancy, steady bookings.
+                </p>
+                <a href="#" class="btn-primary tier-cta">Apply to Host</a>
               </div>
-              <h3 class="mt-7 font-display text-2xl tracking-wide">Property Host</h3>
-              <p class="mt-4 text-sm leading-relaxed text-cocoa-600">
-                List your property and earn income hosting nurses and healthcare
-                workers. Set your own availability and connect with trusted
-                tenants.
-              </p>
-              <a href="#" class="btn-primary mt-8">Apply</a>
-            </article>
-
-            <!-- Clinician Host -->
-            <article class="tier-card reveal" style="--reveal-delay: 240ms">
-              <div class="flex items-center gap-2 text-cocoa-600" aria-hidden="true">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M2 4v16" />
-                  <path d="M2 8h18a2 2 0 0 1 2 2v10" />
-                  <path d="M2 17h20" />
-                  <path d="M6 8v9" />
-                </svg>
-                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="7.5" cy="15.5" r="5.5" />
-                  <path d="m21 2-9.6 9.6" />
-                  <path d="m15.5 7.5 3 3L22 7l-3-3" />
-                </svg>
-              </div>
-              <h3 class="mt-7 font-display text-2xl tracking-wide">Clinician Host</h3>
-              <p class="mt-4 text-sm leading-relaxed text-cocoa-600">
-                Browse stays and list your own home — the complete Liviana
-                experience for nurses who also have a property to share.
-              </p>
-              <a href="#" class="btn-primary mt-8">Apply</a>
             </article>
           </div>
+        </div>
         </div>
       </section>
     </main>
@@ -531,6 +736,8 @@
               </svg>
             </a>
             <span class="h-3.5 w-px bg-cream-50/30" aria-hidden="true"></span>
+            <a href="browse.html" class="text-xs uppercase tracking-widest text-cream-50/80 hover:text-cream-50 transition-colors">Browse Properties</a>
+            <a href="#" class="text-xs uppercase tracking-widest text-cream-50/80 hover:text-cream-50 transition-colors">List My Home</a>
             <a href="#" class="text-xs uppercase tracking-widest text-cream-50/80 hover:text-cream-50 transition-colors">About</a>
           </div>
         </div>
@@ -542,7 +749,6 @@
           <div class="flex items-center gap-8 text-xs text-cream-50/75">
             <a href="#" class="hover:text-cream-50 transition-colors">Privacy Policy</a>
             <a href="#" class="hover:text-cream-50 transition-colors">Terms of Service</a>
-            <a href="admin-login.html" class="hover:text-cream-50 transition-colors">Admin Login</a>
           </div>
         </div>
       </div>
@@ -624,6 +830,29 @@
       );
       document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 
+      // Nav "more" menu toggle (Login & About)
+      const navMenuTrigger = document.getElementById("nav-menu-trigger");
+      const navMenuPanel = document.getElementById("nav-menu-panel");
+      if (navMenuTrigger && navMenuPanel) {
+        navMenuTrigger.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const open = navMenuPanel.classList.toggle("is-open");
+          navMenuTrigger.setAttribute("aria-expanded", String(open));
+        });
+        document.addEventListener("click", (e) => {
+          if (!navMenuPanel.contains(e.target) && !navMenuTrigger.contains(e.target)) {
+            navMenuPanel.classList.remove("is-open");
+            navMenuTrigger.setAttribute("aria-expanded", "false");
+          }
+        });
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") {
+            navMenuPanel.classList.remove("is-open");
+            navMenuTrigger.setAttribute("aria-expanded", "false");
+          }
+        });
+      }
+
       // Apply modal — every Apply button opens it; X / backdrop / Esc closes it.
       const applyModal = document.getElementById("apply-modal");
       function openApplyModal() {
@@ -659,6 +888,29 @@
           closeApplyModal();
         }
       });
+
+      // ===== Mobile navigation drawer =====
+      const mobileToggle = document.querySelector(".mobile-nav-toggle");
+      const mobileDrawer = document.getElementById("mobile-drawer");
+      const mobileBackdrop = document.getElementById("mobile-drawer-backdrop");
+      const mobileClose = document.getElementById("mobile-drawer-close");
+      if (mobileToggle && mobileDrawer && mobileBackdrop) {
+        const setMobileNav = (open) => {
+          mobileDrawer.classList.toggle("is-open", open);
+          mobileBackdrop.classList.toggle("is-open", open);
+          mobileToggle.setAttribute("aria-expanded", String(open));
+          document.body.style.overflow = open ? "hidden" : "";
+        };
+        mobileToggle.addEventListener("click", () => setMobileNav(true));
+        mobileClose && mobileClose.addEventListener("click", () => setMobileNav(false));
+        mobileBackdrop.addEventListener("click", () => setMobileNav(false));
+        mobileDrawer.querySelectorAll("a").forEach((a) =>
+          a.addEventListener("click", () => setMobileNav(false))
+        );
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") setMobileNav(false);
+        });
+      }
     </script>
   </body>
 </html>
