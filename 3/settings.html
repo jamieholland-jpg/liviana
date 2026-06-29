@@ -1,0 +1,767 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Liviana — Account Settings</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                black: "#282828",
+                brown: "#544743",
+                tan: "#8F7C65",
+                sand: "#CEC8BC",
+                gray: "#E8E8E8",
+                cream: "#F3EEEA",
+                white: "#FFFFFF",
+              },
+              cream: {
+                DEFAULT: "#F3EEEA",
+                50: "#FAF7F2",
+                100: "#EFE9DF",
+                200: "#E6DDD0",
+              },
+              espresso: {
+                DEFAULT: "#544743",
+                900: "#282828",
+                800: "#3A2F2C",
+                700: "#544743",
+                600: "#6B5A55",
+              },
+              cocoa: {
+                DEFAULT: "#544743",
+                600: "#544743",
+                400: "#8F7C65",
+                200: "#CEC8BC",
+              },
+              ink: "#282828",
+            },
+            fontFamily: {
+              display: ["Montserrat", "system-ui", "sans-serif"],
+              sans: ['"DM Sans"', "system-ui", "sans-serif"],
+              mono: ["Montserrat", "system-ui", "sans-serif"],
+            },
+            letterSpacing: {
+              widest: "0.24em",
+              ultra: "0.32em",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; scroll-behavior: smooth; }
+      body {
+        font-family: "DM Sans", system-ui, sans-serif;
+        background: #f3eeea;
+        color: #282828;
+        letter-spacing: 0.02em;
+      }
+      ::selection { background: #544743; color: #faf7f2; }
+
+      /* ============= Pill button system =============
+         Used on this page (View Details, List My Home, Notify Me) — rounded
+         pills to mirror livianaco.com/properties. Distinct from index.html's
+         sharp-edge CTAs because this page mirrors the live properties page. */
+      .btn-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        padding: 0.85rem 2.25rem;
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        border-radius: 0;
+        cursor: pointer;
+        transition: background-color 400ms cubic-bezier(0.16, 1, 0.3, 1),
+                    color 400ms cubic-bezier(0.16, 1, 0.3, 1),
+                    letter-spacing 400ms cubic-bezier(0.16, 1, 0.3, 1);
+        text-decoration: none;
+      }
+      .btn-pill-primary {
+        background: #8F7C65;
+        color: #faf7f2;
+        border: 1px solid #8F7C65;
+      }
+      .btn-pill-primary:hover {
+        background: #544743;
+        border-color: #544743;
+        letter-spacing: 0.3em;
+      }
+      .btn-pill-outlined {
+        background: transparent;
+        color: #8F7C65;
+        border: 1px solid #8F7C65;
+      }
+      .btn-pill-outlined:hover {
+        background: #8F7C65;
+        color: #faf7f2;
+        letter-spacing: 0.3em;
+      }
+
+      /* ============= User menu (header dropdown) ============= */
+      .user-menu-wrap { position: relative; }
+      .user-menu-trigger {
+        display: inline-flex;
+        align-items: center;
+        line-height: 0;
+        background: none;
+        border: 0;
+        padding: 0;
+        color: #544743;
+        cursor: pointer;
+        transition: opacity 200ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .user-menu-trigger:hover { opacity: 0.7; }
+
+      .user-menu-panel {
+        position: absolute;
+        top: calc(100% + 12px);
+        right: 0;
+        min-width: 268px;
+        background: #ffffff;
+        border: 1px solid #CEC8BC;
+        z-index: 60;
+        padding: 8px 0;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-6px);
+        transition: opacity 200ms cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 250ms cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 28px 60px -36px rgba(40, 32, 28, 0.4);
+        /* Reset typography inherited from the nav container's uppercase + tracking-widest */
+        text-transform: none;
+        letter-spacing: normal;
+      }
+      .user-menu-panel.is-open {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+      }
+      .user-menu-credits {
+        padding: 16px 22px 18px;
+        border-bottom: 1px solid #E6DDD0;
+      }
+      .user-menu-credits .credits-label {
+        font-family: "DM Sans", sans-serif;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #282828;
+      }
+      .user-menu-credits .credits-sub {
+        font-size: 0.82rem;
+        color: #8f7c65;
+        margin-top: 2px;
+      }
+      .user-menu-group { padding: 6px 0; }
+      .user-menu-group + .user-menu-group { border-top: 1px solid #E6DDD0; }
+      .user-menu-link {
+        display: block;
+        padding: 10px 22px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #282828;
+        text-decoration: none;
+        letter-spacing: 0.01em;
+        transition: background-color 150ms ease;
+      }
+      .user-menu-link:hover { background: #f3eeea; }
+
+      /* ============= Hero ============= */
+      .hero-wash {
+        position: absolute;
+        inset: 0;
+        background: rgba(84, 71, 67, 0.7);
+      }
+
+      /* Scroll reveal */
+      @keyframes reveal-in {
+        from { opacity: 0; transform: translateY(28px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .reveal { opacity: 0; transform: translateY(28px); }
+      .reveal.is-visible {
+        animation: reveal-in 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+        animation-delay: var(--reveal-delay, 0ms);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .reveal { opacity: 1 !important; transform: none !important; animation: none !important; }
+      }
+
+      /* ===== Mobile navigation drawer (below md) ===== */
+      .mobile-nav-toggle { background: none; border: 0; padding: 0; line-height: 0; color: #544743; cursor: pointer; }
+      .mobile-drawer-backdrop {
+        position: fixed; inset: 0;
+        background: rgba(40, 40, 40, 0.5);
+        backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+        opacity: 0; pointer-events: none;
+        transition: opacity 300ms cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 80;
+      }
+      .mobile-drawer-backdrop.is-open { opacity: 1; pointer-events: auto; }
+      .mobile-drawer {
+        position: fixed; top: 0; right: 0; bottom: 0;
+        width: min(86vw, 340px);
+        background: #f3eeea; z-index: 90;
+        transform: translateX(100%);
+        transition: transform 360ms cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex; flex-direction: column; overflow-y: auto;
+        box-shadow: -24px 0 60px -30px rgba(40, 32, 28, 0.5);
+      }
+      .mobile-drawer.is-open { transform: translateX(0); }
+      .mobile-drawer-head { display: flex; align-items: center; justify-content: flex-end; padding: 18px 24px; border-bottom: 1px solid #e6ddd0; }
+      .mobile-drawer-close { background: none; border: 0; padding: 0; line-height: 0; color: #544743; cursor: pointer; }
+      .mobile-drawer-body { padding: 8px 0 32px; }
+      .mobile-nav-section { padding: 10px 0; }
+      .mobile-nav-section + .mobile-nav-section { border-top: 1px solid #e6ddd0; }
+      .mobile-nav-heading { display: block; font-family: "Montserrat", sans-serif; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: #8f7c65; padding: 6px 24px 8px; }
+      .mobile-nav-link { display: block; padding: 12px 24px; font-family: "DM Sans", sans-serif; font-size: 1rem; font-weight: 500; color: #282828; text-decoration: none; transition: background-color 150ms ease; }
+      .mobile-nav-link:hover { background: #efe9df; }
+
+      /* Display headings — uppercase Montserrat, brand scale */
+      .font-display { text-transform: uppercase; }
+      h1 { font-size: 36px !important; letter-spacing: 4px !important; font-weight: 400 !important; }
+      h2 { font-size: 30px !important; letter-spacing: 4px !important; font-weight: 400 !important; }
+      h3 { font-size: 24px !important; letter-spacing: 4px !important; font-weight: 400 !important; }
+
+      /* ===== Account settings (editorial sections, luna-style) ===== */
+      /* Full-width page-header band — photo + scrim, separates h1 from the nav */
+      .settings-hero {
+        position: relative;
+        display: flex;
+        align-items: center;
+        min-height: 240px;
+        background-image: url("nurse-hero.png");
+        background-size: cover;
+        background-position: center center;
+        overflow: hidden;
+      }
+      .settings-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(40, 40, 40, 0.5);
+      }
+      .settings-hero-inner { position: relative; z-index: 1; width: 100%; }
+      .settings-hero h1 { color: #faf7f2; margin: 2.25rem 0; text-align: center; }
+      .settings-section { margin-top: 3rem; }
+      .settings-section:first-of-type { margin-top: 0; }
+      .settings-section-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .settings-section-title { color: #282828; }
+      .section-rule {
+        border: 0;
+        border-top: 1px solid #cec8bc;
+        margin: 16px 0 24px;
+      }
+      .settings-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem 3rem;
+      }
+      .settings-field {
+        display: flex;
+        flex-direction: column;
+        min-width: 200px;
+      }
+      .field-label {
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.78rem;
+        letter-spacing: 0.04em;
+        color: #8f7c65;
+      }
+      .field-value {
+        font-family: "DM Sans", sans-serif;
+        font-size: 1rem;
+        color: #282828;
+        margin-top: 5px;
+      }
+      .field-sub {
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.8rem;
+        color: #8f7c65;
+        margin-top: 3px;
+      }
+      .settings-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+
+      /* Edit-state form — swapped in when a section is being edited */
+      .settings-form { display: none; }
+      .settings-section.is-editing .settings-view { display: none; }
+      .settings-section.is-editing .settings-form { display: block; }
+      .settings-section.is-editing .settings-edit { display: none; }
+      .settings-form-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem 1.5rem;
+        margin-bottom: 1rem;
+      }
+      .settings-form-field {
+        flex: 1 1 220px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .settings-form-field label {
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.78rem;
+        letter-spacing: 0.04em;
+        color: #8f7c65;
+      }
+      .settings-input {
+        width: 100%;
+        background: #ffffff;
+        border: 1px solid #cabfae;
+        color: #282828;
+        padding: 0.7rem 0.9rem;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.95rem;
+        transition: border-color 300ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .settings-input:focus { outline: none; border-color: #544743; }
+      .settings-select { cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none' stroke='%238f7c65' stroke-width='1.5' stroke-linecap='round'%3E%3Cpath d='M3 4.5 6 7.5 9 4.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.9rem center; padding-right: 2.25rem; }
+      .settings-form-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen flex flex-col">
+    <!-- Wordmark vector -->
+    <svg aria-hidden="true" style="position: absolute; width: 0; height: 0; overflow: hidden">
+      <symbol id="liviana-wordmark" viewBox="0 0 1096 200">
+        <path d="M170.458 200H97.2706C66.3857 200 64.3788 162.671 46.2269 148.735C41.3879 144.899 35.3225 143.093 29.6807 143.093C14.74 143.093 2.83204 155.402 2.83204 170.142C2.83204 184.881 14.74 197.19 29.6807 197.19C39.9831 197.19 46.2269 192.351 46.2269 176.408V156.026C57.7335 169.138 63.576 190.947 79.1188 200.022H29.6584C13.3128 200.022 0 186.509 0 170.164C0 153.819 13.3128 140.506 29.6584 140.506C35.9246 140.506 41.5663 142.335 46.2046 145.345V23.6147C46.2046 7.53707 40.0054 2.87657 29.7922 2.83198C29.7476 2.83198 23.4814 2.83198 23.4145 2.83198V0H103.671V2.83198C103.671 2.83198 97.3375 2.83198 97.2929 2.83198C87.5034 2.87657 81.1034 7.35868 80.9027 22.8119V180.845C80.9027 189.72 88.1724 197.19 97.0476 197.19H130.898C153.287 197.19 168.228 187.713 174.695 145.925H177.125C175.72 157.23 175.52 161.869 174.918 163.675V164.277C174.918 166.284 173.713 173.955 170.48 200H170.458Z"/>
+        <path d="M166.511 196.633C174.583 196.633 180.47 195.852 184.172 194.314C187.874 192.775 189.724 190.166 189.724 186.509V13.5132C189.724 9.85617 187.874 7.24718 184.172 5.70855C180.47 4.16992 174.583 3.38945 166.511 3.38945V0H242.24V3.36715C234.167 3.36715 228.28 4.14762 224.579 5.68625C220.877 7.22489 219.026 9.83387 219.026 13.4909V186.464C219.026 190.122 220.877 192.731 224.579 194.269C228.28 195.808 234.167 196.588 242.24 196.588V199.955H166.511V196.588V196.633Z"/>
+        <path d="M364.642 3.36715V0H440.371V3.36715C429.957 3.36715 421.684 5.61936 415.53 10.1238C409.375 14.6282 404.491 21.7639 400.834 31.5085L337.347 199.978H333.98L263.737 13.5132C262.243 9.47709 259.79 6.77891 256.422 5.41866C253.055 4.05842 247.324 3.36715 239.252 3.36715V0H314.981V3.36715C306.44 3.36715 300.263 4.10302 296.472 5.55246C292.681 7.0019 291.522 9.65548 293.016 13.4909L348.609 160.999L397.445 31.5085C400.812 22.4105 399.452 15.4309 393.364 10.6143C387.254 5.77545 377.687 3.36715 364.642 3.36715Z"/>
+        <path d="M437.383 196.633C445.456 196.633 451.343 195.852 455.044 194.314C458.746 192.775 460.597 190.166 460.597 186.509V13.5132C460.597 9.85617 458.746 7.24718 455.044 5.70855C451.343 4.16992 445.456 3.38945 437.383 3.38945V0H513.112V3.36715C505.04 3.36715 499.153 4.14762 495.451 5.68625C491.749 7.22489 489.899 9.83387 489.899 13.4909V186.464C489.899 190.122 491.749 192.731 495.451 194.269C499.153 195.808 505.04 196.588 513.112 196.588V199.955H437.383V196.588V196.633Z"/>
+        <path d="M553.341 167.912C549.862 177.121 551.178 184.19 557.288 189.163C563.376 194.135 572.92 196.633 585.853 196.633V200H510.124V196.633C520.538 196.633 528.811 194.381 534.966 189.876C541.121 185.372 546.027 178.236 549.684 168.491L549.817 167.934H549.684C550.442 166.061 550.999 164.701 551.378 163.853L613.014 0H616.538L686.781 186.487C688.275 190.523 690.728 193.221 694.095 194.581C697.463 195.942 703.194 196.611 711.266 196.611V199.978H635.537V196.611C644.078 196.611 650.21 195.875 653.979 194.425C657.725 192.976 658.862 190.322 657.346 186.464L635.113 127.216C634.556 128.71 633.575 130.539 632.147 132.702C629.137 137.028 624.722 140.172 618.924 142.134C613.103 144.096 607.038 145.345 600.683 145.858C594.327 146.371 588.061 147.062 581.817 147.887C575.573 148.712 569.842 150.764 564.647 153.93C559.429 157.119 555.66 161.757 553.318 167.867L553.341 167.912ZM621.733 91.9166L601.887 38.8449L558.537 153.975C561.904 150.697 566.118 148.222 571.136 146.594C576.153 144.966 581.104 143.873 585.987 143.36C590.871 142.848 595.732 142.201 600.549 141.465C605.388 140.707 609.959 139.213 614.285 136.961C618.589 134.708 622.113 131.475 624.833 127.238C629.048 120.571 628.022 108.797 621.733 91.9166Z"/>
+        <path d="M752.609 0L868.456 175.806V36.8826C868.456 24.5958 866.359 15.9438 862.189 10.9265C858.019 5.90924 851.04 3.38945 841.295 3.38945V0H899.006V3.36715C889.239 3.36715 882.281 5.88694 878.111 10.9042C873.941 15.9215 871.845 24.5735 871.845 36.8603V163.117C871.845 175.404 873.919 184.056 878.111 189.096C882.304 194.135 889.261 196.633 899.006 196.633V200H855.098L738.003 22.2321V163.117C738.003 175.404 740.077 184.056 744.269 189.096C748.439 194.113 755.419 196.633 765.164 196.633V200H707.453V196.633C717.22 196.633 724.178 194.135 728.348 189.096C732.518 184.078 734.614 175.426 734.614 163.117V36.8826C734.614 24.5958 732.518 15.9438 728.348 10.9265C724.178 5.90924 717.198 3.38945 707.453 3.38945V0H752.632H752.609Z"/>
+        <path d="M938.075 167.912C934.596 177.121 935.912 184.19 942.022 189.163C948.11 194.135 957.654 196.633 970.587 196.633V200H894.858V196.633C905.272 196.633 913.545 194.381 919.7 189.876C925.855 185.372 930.76 178.236 934.418 168.491L934.551 167.934H934.418C935.176 166.061 935.733 164.701 936.112 163.853L997.771 0H1001.29L1071.54 186.487C1073.03 190.523 1075.48 193.221 1078.85 194.581C1082.22 195.942 1087.95 196.611 1096.02 196.611V199.978H1020.29V196.611C1028.83 196.611 1034.97 195.875 1038.73 194.425C1042.48 192.976 1043.62 190.322 1042.1 186.464L1019.87 127.216C1019.31 128.71 1018.33 130.539 1016.9 132.702C1013.89 137.028 1009.48 140.172 1003.68 142.134C997.86 144.096 991.794 145.345 985.439 145.858C979.084 146.371 972.817 147.062 966.574 147.887C960.33 148.712 954.599 150.764 949.403 153.93C944.185 157.119 940.416 161.757 938.075 167.867V167.912ZM1006.49 91.9166L986.643 38.8449L943.293 153.975C946.66 150.697 950.875 148.222 955.892 146.594C960.909 144.966 965.86 143.873 970.744 143.36C975.627 142.848 980.488 142.201 985.305 141.465C990.144 140.707 994.716 139.213 999.042 136.961C1003.35 134.708 1006.87 131.475 1009.59 127.238C1013.8 120.571 1012.78 108.797 1006.49 91.9166Z"/>
+      </symbol>
+    </svg>
+
+    <!-- ================= HEADER ================= -->
+    <header class="sticky top-0 z-50 bg-[#f1ece9]/40 backdrop-blur-sm border-b border-[#927c63]/5 text-[#544743]">
+      <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
+        <a href="index.html" class="block" aria-label="Liviana — home">
+          <svg class="h-[28px] md:h-[40px] w-auto" viewBox="0 0 1096 200" fill="currentColor" role="img" aria-hidden="true">
+            <use href="#liviana-wordmark" />
+          </svg>
+        </a>
+        <div class="hidden md:flex items-center gap-6 text-sm tracking-widest uppercase">
+          <a href="browse.html" class="text-[#544743] hover:opacity-70 transition-opacity">Browse Properties</a>
+          <span class="text-[#927c63]/30">|</span>
+          <a href="#" class="text-[#544743] hover:opacity-70 transition-opacity">List My Home</a>
+          <span class="text-[#927c63]/30">|</span>
+
+          <!-- User menu — hamburger trigger -->
+          <div class="user-menu-wrap">
+            <button
+              id="user-menu-trigger"
+              type="button"
+              class="user-menu-trigger"
+              aria-haspopup="true"
+              aria-expanded="false"
+              aria-controls="user-menu-panel"
+              aria-label="Open account menu"
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+            </button>
+
+            <div id="user-menu-panel" class="user-menu-panel" role="menu" aria-labelledby="user-menu-trigger">
+              <div class="user-menu-group">
+                <a href="#" class="user-menu-link" role="menuitem">About</a>
+                <a href="#" class="user-menu-link" role="menuitem">The Edit</a>
+              </div>
+              <div class="user-menu-group">
+                <a href="#" class="user-menu-link" role="menuitem">Your Messages</a>
+                <a href="#" class="user-menu-link" role="menuitem">Concierge</a>
+                <a href="#" class="user-menu-link" role="menuitem">Account Settings</a>
+              </div>
+              <div class="user-menu-group">
+                <a href="#" class="user-menu-link" role="menuitem">Your Stays</a>
+              </div>
+              <div class="user-menu-group">
+                <a href="#" class="user-menu-link" role="menuitem">Logout</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile menu trigger (below md) -->
+        <button
+          class="mobile-nav-toggle md:hidden"
+          type="button"
+          aria-label="Open menu"
+          aria-controls="mobile-drawer"
+          aria-expanded="false"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
+      </nav>
+    </header>
+
+    <!-- ================= MOBILE NAV DRAWER ================= -->
+    <div id="mobile-drawer-backdrop" class="mobile-drawer-backdrop md:hidden" aria-hidden="true"></div>
+    <aside id="mobile-drawer" class="mobile-drawer md:hidden" aria-label="Menu">
+      <div class="mobile-drawer-head">
+        <button id="mobile-drawer-close" type="button" class="mobile-drawer-close" aria-label="Close menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <line x1="5" y1="5" x2="19" y2="19" />
+            <line x1="19" y1="5" x2="5" y2="19" />
+          </svg>
+        </button>
+      </div>
+      <nav class="mobile-drawer-body">
+        <div class="mobile-nav-section">
+          <a href="browse.html" class="mobile-nav-link">Browse Properties</a>
+          <a href="#" class="mobile-nav-link">List My Home</a>
+        </div>
+        <div class="mobile-nav-section">
+          <a href="#" class="mobile-nav-link">About</a>
+          <a href="#" class="mobile-nav-link">The Edit</a>
+          <a href="#" class="mobile-nav-link">Your Messages</a>
+          <a href="#" class="mobile-nav-link">Concierge</a>
+          <a href="#" class="mobile-nav-link">Account Settings</a>
+          <a href="#" class="mobile-nav-link">Your Stays</a>
+        </div>
+        <div class="mobile-nav-section">
+          <a href="#" class="mobile-nav-link">Logout</a>
+        </div>
+      </nav>
+    </aside>
+
+    <main class="flex-1">
+      <!-- Page header band -->
+      <section class="settings-hero">
+        <div class="settings-hero-inner mx-auto max-w-[920px] px-6 lg:px-12">
+          <h1 class="font-display reveal">Account Settings</h1>
+        </div>
+      </section>
+
+      <div class="mx-auto max-w-[920px] px-6 lg:px-12 py-16 md:py-24">
+
+        <!-- Personal Information -->
+        <section class="settings-section reveal">
+          <div class="settings-section-head">
+            <h2 class="settings-section-title font-display">Personal Information</h2>
+            <button type="button" class="btn-pill btn-pill-outlined settings-edit" data-edit>Edit</button>
+          </div>
+          <hr class="section-rule" />
+
+          <!-- Read-only view -->
+          <div class="settings-view">
+            <div class="settings-grid">
+              <div class="settings-field">
+                <span class="field-label">Name</span>
+                <span class="field-value" data-field="name">Michael Smith</span>
+              </div>
+              <div class="settings-field">
+                <span class="field-label">Email</span>
+                <span class="field-value" data-field="email">michaelsmith@gmail.com</span>
+              </div>
+              <div class="settings-field">
+                <span class="field-label">Phone</span>
+                <span class="field-value" data-field="phone">615-123-4567</span>
+              </div>
+              <div class="settings-field">
+                <span class="field-label">NCSBN ID</span>
+                <span class="field-value" data-field="ncsbn">987654321</span>
+              </div>
+              <div class="settings-field">
+                <span class="field-label">Address</span>
+                <span class="field-value" data-field="address">123 Main Street, Nashville TN 37077</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Edit form (prototype) -->
+          <form class="settings-form" novalidate>
+            <div class="settings-form-row">
+              <div class="settings-form-field">
+                <label for="pi-first">First Name</label>
+                <input id="pi-first" class="settings-input" data-input="firstName" value="Michael" />
+              </div>
+              <div class="settings-form-field">
+                <label for="pi-last">Last Name</label>
+                <input id="pi-last" class="settings-input" data-input="lastName" value="Smith" />
+              </div>
+            </div>
+            <div class="settings-form-row">
+              <div class="settings-form-field">
+                <label for="pi-email">Email</label>
+                <input id="pi-email" type="email" class="settings-input" data-input="email" value="michaelsmith@gmail.com" />
+              </div>
+              <div class="settings-form-field">
+                <label for="pi-phone">Phone</label>
+                <input id="pi-phone" type="tel" class="settings-input" data-input="phone" value="615-123-4567" />
+              </div>
+            </div>
+            <div class="settings-form-row">
+              <div class="settings-form-field">
+                <label for="pi-ncsbn">NCSBN ID</label>
+                <input id="pi-ncsbn" class="settings-input" data-input="ncsbn" value="987654321" />
+              </div>
+              <div class="settings-form-field">
+                <label for="pi-address">Address</label>
+                <input id="pi-address" class="settings-input" data-input="address" value="123 Main Street" />
+              </div>
+            </div>
+            <div class="settings-form-row">
+              <div class="settings-form-field">
+                <label for="pi-city">City</label>
+                <input id="pi-city" class="settings-input" data-input="city" value="Nashville" />
+              </div>
+              <div class="settings-form-field">
+                <label for="pi-state">State</label>
+                <select id="pi-state" class="settings-input settings-select" data-input="state">
+                  <option>AL</option><option>AK</option><option>AZ</option><option>AR</option>
+                  <option>CA</option><option>CO</option><option>CT</option><option>DE</option>
+                  <option>FL</option><option>GA</option><option>HI</option><option>ID</option>
+                  <option>IL</option><option>IN</option><option>IA</option><option>KS</option>
+                  <option>KY</option><option>LA</option><option>ME</option><option>MD</option>
+                  <option>MA</option><option>MI</option><option>MN</option><option>MS</option>
+                  <option>MO</option><option>MT</option><option>NE</option><option>NV</option>
+                  <option>NH</option><option>NJ</option><option>NM</option><option>NY</option>
+                  <option>NC</option><option>ND</option><option>OH</option><option>OK</option>
+                  <option>OR</option><option>PA</option><option>RI</option><option>SC</option>
+                  <option>SD</option><option selected>TN</option><option>TX</option><option>UT</option>
+                  <option>VT</option><option>VA</option><option>WA</option><option>WV</option>
+                  <option>WI</option><option>WY</option>
+                </select>
+              </div>
+              <div class="settings-form-field">
+                <label for="pi-zip">Zip</label>
+                <input id="pi-zip" class="settings-input" data-input="zip" value="37077" />
+              </div>
+            </div>
+            <div class="settings-form-actions">
+              <button type="submit" class="btn-pill btn-pill-primary">Save</button>
+              <button type="button" class="btn-pill btn-pill-outlined" data-cancel>Cancel</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Communications -->
+        <section class="settings-section reveal">
+          <div class="settings-section-head">
+            <h2 class="settings-section-title font-display">Communications</h2>
+            <button type="button" class="btn-pill btn-pill-outlined">Edit</button>
+          </div>
+          <hr class="section-rule" />
+          <div class="settings-grid">
+            <div class="settings-field">
+              <span class="field-label">System Notifications</span>
+              <span class="field-value">Email, SMS</span>
+            </div>
+            <div class="settings-field">
+              <span class="field-label">Messages</span>
+              <span class="field-value">Email, SMS</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Payments -->
+        <section class="settings-section reveal">
+          <div class="settings-section-head">
+            <h2 class="settings-section-title font-display">Payments</h2>
+            <button type="button" class="btn-pill btn-pill-outlined">Edit</button>
+          </div>
+          <hr class="section-rule" />
+          <div class="settings-grid">
+            <div class="settings-field">
+              <span class="field-label">Payment methods</span>
+              <span class="field-value">Visa 5022</span>
+              <span class="field-sub">Expiration: 2/2030</span>
+            </div>
+            <div class="settings-field">
+              <span class="field-label">Payouts</span>
+              <span class="field-value">ABC Bank</span>
+              <span class="field-sub">Checking: ••• 9882</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Help & Feedback -->
+        <section class="settings-section reveal">
+          <div class="settings-section-head">
+            <h2 class="settings-section-title font-display">Help &amp; Feedback</h2>
+          </div>
+          <hr class="section-rule" />
+          <div class="settings-actions">
+            <a href="#" class="btn-pill btn-pill-outlined">Contact Us</a>
+            <a href="#" class="btn-pill btn-pill-outlined">Leave Feedback</a>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="bg-brand-brown text-cream-50">
+      <div class="mx-auto max-w-[1600px] px-6 lg:px-12 py-16">
+        <div class="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
+          <div>
+            <svg class="h-[34px] w-auto text-cream-50" viewBox="0 0 1096 200" fill="currentColor" role="img" aria-label="Liviana">
+              <use href="#liviana-wordmark" />
+            </svg>
+            <p class="mt-5 text-sm text-cream-50/70">
+              Curated housing for traveling healthcare professionals.
+              <span class="italic" style="color: #c8ac84">LIV beyond the shift.</span>
+            </p>
+          </div>
+
+          <div class="flex items-center gap-5">
+            <a href="#" aria-label="Instagram" class="text-cream-50/70 hover:text-cream-50 transition-colors">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <rect x="2.5" y="2.5" width="19" height="19" rx="5" />
+                <circle cx="12" cy="12" r="4.2" />
+                <circle cx="17.6" cy="6.4" r="1.1" fill="currentColor" stroke="none" />
+              </svg>
+            </a>
+            <a href="#" aria-label="Facebook" class="text-cream-50/70 hover:text-cream-50 transition-colors">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M13.5 21v-7h2.3l.4-2.9h-2.7V9.3c0-.8.2-1.4 1.4-1.4h1.5V5.3c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.1H8.2V14h2.3v7h3z" />
+              </svg>
+            </a>
+            <span class="h-3.5 w-px bg-cream-50/30" aria-hidden="true"></span>
+            <a href="browse.html" class="text-xs uppercase tracking-widest text-cream-50/80 hover:text-cream-50 transition-colors">Browse Properties</a>
+            <a href="#" class="text-xs uppercase tracking-widest text-cream-50/80 hover:text-cream-50 transition-colors">List My Home</a>
+            <a href="#" class="text-xs uppercase tracking-widest text-cream-50/80 hover:text-cream-50 transition-colors">About</a>
+            <a href="#" class="text-xs uppercase tracking-widest text-cream-50/80 hover:text-cream-50 transition-colors">The Edit</a>
+          </div>
+        </div>
+
+        <hr class="my-10 border-cream-50/15" />
+
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <p class="text-xs text-cream-50/50">© 2026 LIVIANA, LLC. All rights reserved.</p>
+          <div class="flex items-center gap-8 text-xs text-cream-50/75">
+            <a href="#" class="hover:text-cream-50 transition-colors">Privacy Policy</a>
+            <a href="#" class="hover:text-cream-50 transition-colors">Terms of Service</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              io.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.15 }
+      );
+      document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+
+      // ===== Settings edit-state toggle (Personal Information prototype) =====
+      document.querySelectorAll(".settings-section").forEach((card) => {
+        const editBtn = card.querySelector("[data-edit]");
+        const form = card.querySelector(".settings-form");
+        if (!editBtn || !form) return;
+        const close = () => card.classList.remove("is-editing");
+        editBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          card.classList.add("is-editing");
+        });
+        card.querySelector("[data-cancel]")?.addEventListener("click", close);
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const v = (n) => (form.querySelector(`[data-input="${n}"]`)?.value || "").trim();
+          const set = (f, val) => {
+            const el = card.querySelector(`[data-field="${f}"]`);
+            if (el) el.textContent = val;
+          };
+          set("name", `${v("firstName")} ${v("lastName")}`.trim());
+          set("email", v("email"));
+          set("phone", v("phone"));
+          set("ncsbn", v("ncsbn"));
+          set("address", `${v("address")}, ${v("city")} ${v("state")} ${v("zip")}`.replace(/\s+/g, " ").trim());
+          close();
+        });
+      });
+
+      // User menu dropdown — click trigger to toggle, click outside or Esc to close.
+      const userMenuTrigger = document.getElementById("user-menu-trigger");
+      const userMenuPanel = document.getElementById("user-menu-panel");
+      function setUserMenu(open) {
+        userMenuPanel.classList.toggle("is-open", open);
+        userMenuTrigger.setAttribute("aria-expanded", String(open));
+      }
+      if (userMenuTrigger && userMenuPanel) {
+        userMenuTrigger.addEventListener("click", (e) => {
+          e.stopPropagation();
+          setUserMenu(!userMenuPanel.classList.contains("is-open"));
+        });
+        document.addEventListener("click", (e) => {
+          if (!userMenuPanel.contains(e.target) && e.target !== userMenuTrigger) {
+            setUserMenu(false);
+          }
+        });
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && userMenuPanel.classList.contains("is-open")) {
+            setUserMenu(false);
+            userMenuTrigger.focus();
+          }
+        });
+      }
+
+      // ===== Mobile navigation drawer =====
+      const mobileToggle = document.querySelector(".mobile-nav-toggle");
+      const mobileDrawer = document.getElementById("mobile-drawer");
+      const mobileBackdrop = document.getElementById("mobile-drawer-backdrop");
+      const mobileClose = document.getElementById("mobile-drawer-close");
+      if (mobileToggle && mobileDrawer && mobileBackdrop) {
+        const setMobileNav = (open) => {
+          mobileDrawer.classList.toggle("is-open", open);
+          mobileBackdrop.classList.toggle("is-open", open);
+          mobileToggle.setAttribute("aria-expanded", String(open));
+          document.body.style.overflow = open ? "hidden" : "";
+        };
+        mobileToggle.addEventListener("click", () => setMobileNav(true));
+        mobileClose && mobileClose.addEventListener("click", () => setMobileNav(false));
+        mobileBackdrop.addEventListener("click", () => setMobileNav(false));
+        mobileDrawer.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setMobileNav(false)));
+        document.addEventListener("keydown", (e) => { if (e.key === "Escape") setMobileNav(false); });
+      }
+    </script>
+  </body>
+</html>
